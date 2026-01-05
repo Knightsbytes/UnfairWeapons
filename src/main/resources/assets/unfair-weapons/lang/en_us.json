@@ -4,5 +4,10 @@
   "item.unfair-weapons.gun": "Gun!",
   "item.unfair-weapons.cutlass": "Energy cutlass",
 
+  "item.unfair-weapons.superconductor_helmet": "Superconductor helmet",
+  "item.unfair-weapons.superconductor_chestplate": "Superconductor chestplate",
+  "item.unfair-weapons.superconductor_leggings": "Superconductor leggings",
+  "item.unfair-weapons.superconductor_boots": "Superconductor boots",
+
   "itemGroup.unfairitems.unfair_items": "Unfair items"
 }

@@ -31,6 +31,10 @@ public class CreativeTabRegister {
                             output.accept(CLAYMORE);
                             output.accept(GUN);
                             output.accept(CUTLASS);
+                            output.accept(SUPERCONDUCTOR_HELMET);
+                            output.accept(SUPERCONDUCTOR_CHESTPLATE);
+                            output.accept(SUPERCONDUCTOR_LEGGINGS);
+                            output.accept(SUPERCONDUCTOR_BOOTS);
                         })
                         .build()
 

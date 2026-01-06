@@ -55,7 +55,7 @@ public class ItemsRegister {
             new Item.Properties().humanoidArmor(SuperconductorArmourMaterial.INSTANCE, ArmorType.HELMET)
                     .durability(ArmorType.HELMET.getDurability(SuperconductorArmourMaterial.BASE_DURABILITY))
     );
-    public static final Item SUPERCONDUCTOR_CHESTPLATE = registerItem("" +
+    public static final Item SUPERCONDUCTOR_CHESTPLATE = registerItem(
             modItemId("superconductor_chestplate"),
             Item::new,
             new Item.Properties().humanoidArmor(SuperconductorArmourMaterial.INSTANCE, ArmorType.CHESTPLATE)

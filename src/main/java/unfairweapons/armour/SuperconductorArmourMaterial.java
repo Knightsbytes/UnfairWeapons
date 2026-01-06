@@ -28,8 +28,8 @@ public class SuperconductorArmourMaterial {
             ),
             5,
             SoundEvents.ARMOR_EQUIP_NETHERITE,
-            0.0F,
-            0.0F,
+            3.0F,
+            0.25F,
             ItemTags.REPAIRS_NETHERITE_ARMOR,
             SUPERCONDUCTOR_ARMOR_MATERIAL_KEY
     );

@@ -14,7 +14,7 @@ import java.util.Map;
 import static unfairweapons.UnfairWeapons.MOD_ID;
 
 public class SuperconductorArmourMaterial {
-    public static final int BASE_DURABILITY = 15;
+    public static final int BASE_DURABILITY = 50;
 
     public static final ResourceKey<EquipmentAsset> SUPERCONDUCTOR_ARMOR_MATERIAL_KEY = ResourceKey.create(EquipmentAssets.ROOT_ID, Identifier.fromNamespaceAndPath(MOD_ID, "superconductor"));
 

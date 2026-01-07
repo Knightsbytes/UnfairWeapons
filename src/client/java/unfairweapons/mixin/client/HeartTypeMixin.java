@@ -44,9 +44,9 @@ public abstract class HeartTypeMixin {
             // Build the custom sprite path for filled hearts
             String spriteName;
             if (hardcore) {
-                spriteName = half ? "custom_hardcore_half" : "custom_hardcore_full";
+                spriteName = half ? "petrified_hardcore_half" : "petrified_hardcore_full";
             } else {
-                spriteName = half ? "custom_half" : "custom_full";
+                spriteName = half ? "petrified_half" : "petrified_full";
             }
 
             if (blinking) {
@@ -54,12 +54,12 @@ public abstract class HeartTypeMixin {
             }
 
             // Return your custom sprite
-            Identifier customSprite = Identifier.fromNamespaceAndPath(
+            Identifier petrificationSprite = Identifier.fromNamespaceAndPath(
                     MOD_ID,
                     "hud/heart/" + spriteName
             );
 
-            cir.setReturnValue(customSprite);
+            cir.setReturnValue(petrificationSprite);
         }
     }
 }

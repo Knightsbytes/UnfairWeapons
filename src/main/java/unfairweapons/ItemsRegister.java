@@ -11,6 +11,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.Item;
 
+import static net.minecraft.world.effect.MobEffects.INSTANT_HEALTH;
 import static unfairweapons.UnfairWeapons.MOD_ID;
 import static net.minecraft.world.item.Items.registerItem;
 import static unfairweapons.UnfairWeapons.PETRIFICATION_EFFECT;
@@ -39,7 +40,8 @@ public class ItemsRegister {
             List.of(
                     new ApplyStatusEffectsConsumeEffect(
                             List.of(
-                                    new MobEffectInstance(PETRIFICATION_EFFECT, 90000, 0)
+                                    new MobEffectInstance(PETRIFICATION_EFFECT, 90000, 0),
+                                    new MobEffectInstance(INSTANT_HEALTH, 1, 100)
                             )
                     )
             )

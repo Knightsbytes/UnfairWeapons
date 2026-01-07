@@ -1,5 +1,7 @@
 package unfairweapons;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.api.ModInitializer;
 
 import net.minecraft.core.Holder;
@@ -30,9 +32,9 @@ public class UnfairWeapons implements ModInitializer {
 			Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT, Identifier.fromNamespaceAndPath(MOD_ID, "petrification"), new PetrificationEffect()
 					.addAttributeModifier(Attributes.MAX_HEALTH, Identifier.fromNamespaceAndPath(MOD_ID, "effect.petrification.health"), 10.0, AttributeModifier.Operation.ADD_VALUE)
 					.addAttributeModifier(Attributes.ARMOR, Identifier.fromNamespaceAndPath(MOD_ID, "effect.petrification.armor"), 20.0, AttributeModifier.Operation.ADD_VALUE)
+					.addAttributeModifier(Attributes.SAFE_FALL_DISTANCE, Identifier.fromNamespaceAndPath(MOD_ID, "effect.petrification.safe_fall_distance"), 2000.0, AttributeModifier.Operation.ADD_VALUE)
 
 			);
-
 
 	@Override
 	public void onInitialize() {

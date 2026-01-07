@@ -26,7 +26,7 @@ public class PetrificationEffect extends MobEffect {
     @Override
     public boolean applyEffectTick(ServerLevel world, LivingEntity entity, int amplifier) {
         if (entity instanceof Player) {
-            entity.fallDistance = 0f;
+
         }
 
         return super.applyEffectTick(world, entity, amplifier);

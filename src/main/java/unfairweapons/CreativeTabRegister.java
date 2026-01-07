@@ -35,6 +35,7 @@ public class CreativeTabRegister {
                             output.accept(SUPERCONDUCTOR_CHESTPLATE);
                             output.accept(SUPERCONDUCTOR_LEGGINGS);
                             output.accept(SUPERCONDUCTOR_BOOTS);
+                            output.accept(TOTEM_OF_PETRIFICATION);
                         })
                         .build()
 

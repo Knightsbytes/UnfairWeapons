@@ -101,6 +101,7 @@ public class ItemsRegister {
             new Item.Properties().component(
                     DataComponents.DEATH_PROTECTION, TOTEM_OF_PETRIFICATION_TOTEM
             )
+                    .stacksTo(1)
     );
 
 }

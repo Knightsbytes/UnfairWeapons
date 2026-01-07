@@ -35,12 +35,18 @@ public abstract class HeartTypeMixin {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player != null && mc.player.hasEffect(PETRIFICATION_EFFECT)) {
 
-            // Build the custom sprite path
+            // Skip if this is CONTAINER - let vanilla handle empty hearts
+            String thisType = this.toString();
+            if (thisType.equals("CONTAINER")) {
+                return; // Use default container
+            }
+
+            // Build the custom sprite path for filled hearts
             String spriteName;
             if (hardcore) {
-                spriteName = half ? "petrified_hardcore_half" : "petrified_hardcore_full";
+                spriteName = half ? "custom_hardcore_half" : "custom_hardcore_full";
             } else {
-                spriteName = half ? "petrified_half" : "petrified_full";
+                spriteName = half ? "custom_half" : "custom_full";
             }
 
             if (blinking) {
@@ -48,12 +54,12 @@ public abstract class HeartTypeMixin {
             }
 
             // Return your custom sprite
-            Identifier petrifiedSprite = Identifier.fromNamespaceAndPath(
+            Identifier customSprite = Identifier.fromNamespaceAndPath(
                     MOD_ID,
                     "hud/heart/" + spriteName
             );
 
-            cir.setReturnValue(petrifiedSprite);
+            cir.setReturnValue(customSprite);
         }
     }
 }

@@ -1,22 +1,31 @@
 package unfairweapons;
 
 import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.Item;
 
 import static unfairweapons.UnfairWeapons.MOD_ID;
 import static net.minecraft.world.item.Items.registerItem;
+import static unfairweapons.UnfairWeapons.PETRIFICATION_EFFECT;
 
 import net.minecraft.world.item.ToolMaterial;
+import net.minecraft.world.item.component.DeathProtection;
+import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
+import net.minecraft.world.item.consume_effects.ClearAllStatusEffectsConsumeEffect;
 import net.minecraft.world.item.equipment.*;
 import unfairweapons.armour.SuperconductorArmourMaterial;
 import unfairweapons.items.ClaymoreItem;
 import unfairweapons.items.GunItem;
 import unfairweapons.items.CutlassItem;
+
+import java.util.List;
 
 public class ItemsRegister {
     public static void registerItems() {
@@ -25,6 +34,16 @@ public class ItemsRegister {
     private static ResourceKey<Item> modItemId(final String name) {
         return ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MOD_ID, name));
     }
+
+    public static final DeathProtection TOTEM_OF_PETRIFICATION_TOTEM = new DeathProtection(
+            List.of(
+                    new ApplyStatusEffectsConsumeEffect(
+                            List.of(
+                                    new MobEffectInstance(PETRIFICATION_EFFECT, 90000, 0)
+                            )
+                    )
+            )
+    );
 
     //Create Armour resource key
     private final static ResourceKey<? extends Registry<EquipmentAsset>> ROOT_ID = ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath(MOD_ID,"equipment_asset"));
@@ -75,4 +94,13 @@ public class ItemsRegister {
             new Item.Properties().humanoidArmor(SuperconductorArmourMaterial.INSTANCE, ArmorType.BOOTS)
                     .durability(ArmorType.BOOTS.getDurability(SuperconductorArmourMaterial.BASE_DURABILITY))
     );
+
+    public static final Item TOTEM_OF_PETRIFICATION = registerItem(
+            modItemId("totem_of_petrification"),
+            Item::new,
+            new Item.Properties().component(
+                    DataComponents.DEATH_PROTECTION, TOTEM_OF_PETRIFICATION_TOTEM
+            )
+    );
+
 }

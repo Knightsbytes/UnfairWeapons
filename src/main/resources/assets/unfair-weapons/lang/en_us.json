@@ -9,5 +9,8 @@
   "item.unfair-weapons.superconductor_leggings": "Superconductor leggings",
   "item.unfair-weapons.superconductor_boots": "Superconductor boots",
 
+  "effect.unfair-weapons.example": "Example",
+  "effect.unfair-weapons.petrification": "Petrified",
+
   "itemGroup.unfairitems.unfair_items": "Unfair items"
 }

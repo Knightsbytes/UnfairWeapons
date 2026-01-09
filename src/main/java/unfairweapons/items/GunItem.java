@@ -87,7 +87,7 @@ public class GunItem extends Item implements ProjectileItem {
         player.awardStat(Stats.ITEM_USED.get(this));
 
         if (!player.isCreative()) {
-            player.getCooldowns().addCooldown(itemStack, 100);
+            player.getCooldowns().addCooldown(itemStack, 10);
         }
 
         return InteractionResult.PASS;

@@ -1,5 +1,6 @@
 package unfairweapons.projectile;
 
+import net.fabricmc.fabric.impl.lookup.block.ServerWorldCache;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -56,7 +57,7 @@ public class ShotgunPellet extends ThrowableItemProjectile {
     protected void onHitEntity(EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
         Entity entity = entityHitResult.getEntity();
-        int damage = 10;
+        int damage = 20;
         entity.hurt(this.damageSources().thrown(this, this.getOwner()), damage);
     }
 

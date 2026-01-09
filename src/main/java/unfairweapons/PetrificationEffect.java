@@ -10,7 +10,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 
-import static net.minecraft.world.effect.MobEffects.REGENERATION;
+import static net.minecraft.world.effect.MobEffects.*;
 import static unfairweapons.UnfairWeapons.MOD_ID;
 import static unfairweapons.UnfairWeapons.PETRIFICATION_EFFECT;
 
@@ -34,9 +34,19 @@ public class PetrificationEffect extends MobEffect {
             }
 
             if (entity.getHealth() <= 4){
-                MobEffectInstance HealthRegen = new MobEffectInstance(REGENERATION, 2, 0);
+                MobEffectInstance HealthRegen = new MobEffectInstance(REGENERATION, 200, 2);
                 entity.addEffect(HealthRegen);
             }
+
+            entity.removeEffect(NAUSEA);
+            entity.removeEffect(POISON);
+            entity.removeEffect(WEAKNESS);
+            entity.removeEffect(SLOWNESS);
+            entity.removeEffect(BLINDNESS);
+            entity.removeEffect(JUMP_BOOST);
+            entity.removeEffect(WITHER);
+            entity.removeEffect(MINING_FATIGUE);
+            entity.removeEffect(OOZING);
         }
 
         return super.applyEffectTick(world, entity, amplifier);

@@ -25,14 +25,13 @@ public class UnfairWeapons implements ModInitializer {
 	// That way, it's clear which mod wrote info, warnings, and errors.
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-	public static final Holder<MobEffect> EXAMPLE_EFFECT =
-			Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT, Identifier.fromNamespaceAndPath(MOD_ID, "example"), new ExampleEffect());
-
 	public static final Holder<MobEffect> PETRIFICATION_EFFECT =
 			Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT, Identifier.fromNamespaceAndPath(MOD_ID, "petrification"), new PetrificationEffect()
 					.addAttributeModifier(Attributes.MAX_HEALTH, Identifier.fromNamespaceAndPath(MOD_ID, "effect.petrification.health"), 10.0, AttributeModifier.Operation.ADD_VALUE)
 					.addAttributeModifier(Attributes.ARMOR, Identifier.fromNamespaceAndPath(MOD_ID, "effect.petrification.armor"), 20.0, AttributeModifier.Operation.ADD_VALUE)
 					.addAttributeModifier(Attributes.SAFE_FALL_DISTANCE, Identifier.fromNamespaceAndPath(MOD_ID, "effect.petrification.safe_fall_distance"), 2000.0, AttributeModifier.Operation.ADD_VALUE)
+					.addAttributeModifier(Attributes.ATTACK_DAMAGE, Identifier.fromNamespaceAndPath(MOD_ID, "effect.petrification.strength"), 6.0, AttributeModifier.Operation.ADD_VALUE)
+					.addAttributeModifier(Attributes.MOVEMENT_SPEED, Identifier.fromNamespaceAndPath(MOD_ID,"effect.petrification.speed"), 0.4F, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
 
 			);
 

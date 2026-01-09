@@ -34,7 +34,7 @@ public class PetrificationEffect extends MobEffect {
             }
 
             if (entity.getHealth() <= 4){
-                MobEffectInstance HealthRegen = new MobEffectInstance(REGENERATION, 200, 2);
+                MobEffectInstance HealthRegen = new MobEffectInstance(REGENERATION, 200, 3);
                 entity.addEffect(HealthRegen);
             }
 
@@ -47,6 +47,8 @@ public class PetrificationEffect extends MobEffect {
             entity.removeEffect(WITHER);
             entity.removeEffect(MINING_FATIGUE);
             entity.removeEffect(OOZING);
+
+            entity.isInPowderSnow = false;
         }
 
         return super.applyEffectTick(world, entity, amplifier);

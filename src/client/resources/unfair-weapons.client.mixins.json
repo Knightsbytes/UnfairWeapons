@@ -4,7 +4,8 @@
 	"compatibilityLevel": "JAVA_21",
 	"client": [
 		"ExampleClientMixin",
-		"HeartTypeMixin"
+		"HeartTypeMixin",
+		"GameRendererMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

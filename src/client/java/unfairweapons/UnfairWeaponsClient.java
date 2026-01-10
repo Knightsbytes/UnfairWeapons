@@ -18,9 +18,9 @@ public class UnfairWeaponsClient implements ClientModInitializer {
 
 	//public final KeyMapping keyDebugCrash = new KeyMapping("key.debug.crash", InputConstants.Type.KEYSYM, 67, KeyMapping.Category.DEBUG);
 
-	public final KeyMapping PetrificationAbility1 = KeyBindingHelper.registerKeyBinding(new KeyMapping("eldritch_ability_1", GLFW.GLFW_KEY_V, ELDRITCH_ABILITIES));
-	public final KeyMapping PetrificationAbility2 = KeyBindingHelper.registerKeyBinding(new KeyMapping("eldritch_ability_2", GLFW.GLFW_KEY_B, ELDRITCH_ABILITIES));
-	public final KeyMapping PetrificationAbility3 = KeyBindingHelper.registerKeyBinding(new KeyMapping("eldritch_ability_3", GLFW.GLFW_KEY_N, ELDRITCH_ABILITIES));
+	public final KeyMapping PetrificationAbility1 = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.ability.eldritch_ability_1", GLFW.GLFW_KEY_V, ELDRITCH_ABILITIES));
+	public final KeyMapping PetrificationAbility2 = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.ability.eldritch_ability_2", GLFW.GLFW_KEY_B, ELDRITCH_ABILITIES));
+	public final KeyMapping PetrificationAbility3 = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.ability.eldritch_ability_3", GLFW.GLFW_KEY_N, ELDRITCH_ABILITIES));
 
 	@Override
 	public void onInitializeClient() {

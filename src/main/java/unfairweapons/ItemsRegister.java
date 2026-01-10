@@ -109,7 +109,7 @@ public class ItemsRegister {
 
 
     public static final Item PETRIFICATION_VIAL = registerItem(
-            modItemId("petrification_vial"),
+            modItemId("petrified_vial"),
             PetrificationNeedleItem::new,
             new Item.Properties()
                     .stacksTo(1)

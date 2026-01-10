@@ -4,6 +4,7 @@
   "item.unfair-weapons.gun": "Gun!",
   "item.unfair-weapons.cutlass": "Energy cutlass",
   "item.unfair-weapons.totem_of_petrification": "Totem of petrification",
+  "item.unfair-weapons.petrified_vial": "Petrified vial",
 
   "item.unfair-weapons.superconductor_helmet": "Superconductor helmet",
   "item.unfair-weapons.superconductor_chestplate": "Superconductor chestplate",
@@ -13,5 +14,10 @@
   "effect.unfair-weapons.example": "Example",
   "effect.unfair-weapons.petrification": "Petrified",
 
-  "itemGroup.unfairitems.unfair_items": "Unfair items"
+  "itemGroup.unfairitems.unfair_items": "Unfair items",
+
+  "key.category.unfair_weapons.eldritch_abilities": "Eldritch abilities",
+  "key.actions.unfair_weapons.eldritch_ability_0": "Ability 1",
+  "key.actions.unfair_weapons.eldritch_ability_1": "Ability 2",
+  "key.actions.unfair_weapons.eldritch_ability_2": "Ability 3"
 }

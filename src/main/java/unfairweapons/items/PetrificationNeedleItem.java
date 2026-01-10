@@ -16,21 +16,27 @@ public class PetrificationNeedleItem extends Item {
     }
 
     @Override
-    public InteractionResult use(Level level, Player player, InteractionHand interactionHand){
+    public InteractionResult use(Level level, Player player, InteractionHand interactionHand) {
         ItemStack stack = player.getItemInHand(interactionHand);
 
-        MobEffectInstance petrification2 = new MobEffectInstance(
-                PETRIFICATION_EFFECT,
-                90000,
-                1
-        );
+        if (player.hasEffect(PETRIFICATION_EFFECT)) {
 
-        player.addEffect(petrification2);
+            MobEffectInstance petrification2 = new MobEffectInstance(
+                    PETRIFICATION_EFFECT,
+                    90000,
+                    1
+            );
 
-        if (!player.isCreative()){
-            stack.consume(1, player);
+            player.addEffect(petrification2);
+
+            if (!player.isCreative()) {
+                stack.consume(1, player);
+            }
+
+            return InteractionResult.SUCCESS;
         }
-
-        return InteractionResult.SUCCESS;
+        else{
+            return InteractionResult.FAIL;
+        }
     }
 }

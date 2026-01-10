@@ -25,6 +25,7 @@ import unfairweapons.armour.SuperconductorArmourMaterial;
 import unfairweapons.items.ClaymoreItem;
 import unfairweapons.items.GunItem;
 import unfairweapons.items.CutlassItem;
+import unfairweapons.items.PetrificationNeedleItem;
 
 import java.util.List;
 
@@ -106,4 +107,11 @@ public class ItemsRegister {
                     .stacksTo(1)
     );
 
+
+    public static final Item PETRIFICATION_VIAL = registerItem(
+            modItemId("petrification_vial"),
+            PetrificationNeedleItem::new,
+            new Item.Properties()
+                    .stacksTo(1)
+    );
 }

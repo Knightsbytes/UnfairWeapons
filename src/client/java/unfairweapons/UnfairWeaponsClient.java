@@ -10,6 +10,7 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
@@ -59,7 +60,7 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                 MobEffectInstance effectInstance = client.player.getEffect(PETRIFICATION_EFFECT);
 
                 if (effectInstance != null) {
-                    if (effectInstance.getAmplifier() >= 0) {
+                    if (effectInstance.getAmplifier() >= 1) {
                         // Check cooldown
                         String cooldownKey = playerId + "_ability1";
                         if (cooldowns.getOrDefault(cooldownKey, 0L) > currentTick) {
@@ -88,7 +89,7 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                 MobEffectInstance effectInstance = client.player.getEffect(PETRIFICATION_EFFECT);
 
                 if (effectInstance != null) {
-                    if (effectInstance.getAmplifier() >= 1) {
+                    if (effectInstance.getAmplifier() >= 2) {
                         // Check cooldown
                         String cooldownKey = playerId + "_ability2";
                         if (cooldowns.getOrDefault(cooldownKey, 0L) > currentTick) {
@@ -117,7 +118,7 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                 MobEffectInstance effectInstance = client.player.getEffect(PETRIFICATION_EFFECT);
 
                 if (effectInstance != null) {
-                    if (effectInstance.getAmplifier() >= 1) {
+                    if (effectInstance.getAmplifier() >= 2) {
                         // Check cooldown
                         String cooldownKey = playerId + "_ability3";
                         if (cooldowns.getOrDefault(cooldownKey, 0L) > currentTick) {
@@ -143,6 +144,7 @@ public class UnfairWeaponsClient implements ClientModInitializer {
         });
 
         HudElementRegistry.attachElementBefore(VanillaHudElements.CHAT, Identifier.fromNamespaceAndPath(MOD_ID, "before_chat"), UnfairWeaponsClient::render);
+
 	}
 
     private static void render(GuiGraphics context, DeltaTracker tickCounter) {
@@ -158,17 +160,28 @@ public class UnfairWeaponsClient implements ClientModInitializer {
         int y = 0;
 
         // Image dimensions
-        int width = 32;
+        int width = 128;
         int height = 32;
 
+        Identifier vanillaTest = Identifier.fromNamespaceAndPath("minecraft", "textures/gui/icons.png");
+        context.blit(vanillaTest, x, y, 0, 0, 128, 32, 256, 256);
+
+
         if (mc.player.hasEffect(PETRIFICATION_EFFECT)){
+            //context.fill(x, y, x + width, y + height, 0xFFFF0000);
             MobEffectInstance effectInstance = mc.player.getEffect(PETRIFICATION_EFFECT);
-            assert effectInstance != null;
             int effectInstanceAmplification = effectInstance.getAmplifier();
 
             if (effectInstanceAmplification >= 1){
-                context.blit(PETRIFICATION_COOLDOWNS_BACKGROUND, x, y, 0, 0, width, height, width, height);
+                context.blit(
+                        RenderPipelines.GUI_TEXTURED,
+                        PETRIFICATION_COOLDOWNS_BACKGROUND,
+                        x, y, 0, 0,
+                        width, height,
+                        width, height
+                );
             }
+
         }
 
     }

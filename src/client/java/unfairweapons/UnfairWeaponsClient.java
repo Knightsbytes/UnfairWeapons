@@ -47,9 +47,10 @@ public class UnfairWeaponsClient implements ClientModInitializer {
 
 	//public final KeyMapping keyDebugCrash = new KeyMapping("key.debug.crash", InputConstants.Type.KEYSYM, 67, KeyMapping.Category.DEBUG);
 
-	public final KeyMapping PetrificationAbility1 = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.ability.eldritch_ability_1", GLFW.GLFW_KEY_V, ELDRITCH_ABILITIES));
-	public final KeyMapping PetrificationAbility2 = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.ability.eldritch_ability_2", GLFW.GLFW_KEY_B, ELDRITCH_ABILITIES));
-	public final KeyMapping PetrificationAbility3 = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.ability.eldritch_ability_3", GLFW.GLFW_KEY_N, ELDRITCH_ABILITIES));
+	public final KeyMapping PetrificationAbility1 = KeyBindingHelper.registerKeyBinding(new KeyMapping("eldritch ability 1", GLFW.GLFW_KEY_V, ELDRITCH_ABILITIES));
+	public final KeyMapping PetrificationAbility2 = KeyBindingHelper.registerKeyBinding(new KeyMapping("eldritch ability 2", GLFW.GLFW_KEY_B, ELDRITCH_ABILITIES));
+	public final KeyMapping PetrificationAbility3 = KeyBindingHelper.registerKeyBinding(new KeyMapping("eldritch ability 3", GLFW.GLFW_KEY_N, ELDRITCH_ABILITIES));
+    public final KeyMapping PetrificationAbility4 = KeyBindingHelper.registerKeyBinding(new KeyMapping("eldritch ability 4", GLFW.GLFW_KEY_M, ELDRITCH_ABILITIES));
 
     private static final HashMap<UUID, Long> cooldowns = new HashMap<>();
 
@@ -176,7 +177,23 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                     }
                 }
             }
+
+            while (PetrificationAbility4.consumeClick()) {
+                MobEffectInstance effectInstance = client.player.getEffect(PETRIFICATION_EFFECT);
+
+                if (effectInstance.getAmplifier() == 1){
+                    MobEffectInstance petrificationLevel3 = new MobEffectInstance(
+                            PETRIFICATION_EFFECT,
+                            90000,
+                            2
+                    );
+
+                    client.player.addEffect(petrificationLevel3);
+                }
+            }
         });
+
+
 
         HudElementRegistry.attachElementBefore(VanillaHudElements.CHAT, Identifier.fromNamespaceAndPath(MOD_ID, "before_chat"), UnfairWeaponsClient::render);
 

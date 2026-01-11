@@ -3,8 +3,7 @@
 	"package": "unfairweapons.mixin.client",
 	"compatibilityLevel": "JAVA_21",
 	"client": [
-		"HeartTypeMixin",
-		"GameRendererMixin"
+		"HeartTypeMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

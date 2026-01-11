@@ -4,9 +4,17 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.Mth;
+import net.minecraft.util.Util;
 import net.minecraft.world.effect.MobEffectInstance;
 import org.lwjgl.glfw.GLFW;
 
@@ -17,6 +25,11 @@ import static unfairweapons.UnfairWeapons.MOD_ID;
 import static unfairweapons.UnfairWeapons.PETRIFICATION_EFFECT;
 
 public class UnfairWeaponsClient implements ClientModInitializer {
+    private static final Identifier PETRIFICATION_COOLDOWNS_BACKGROUND = Identifier.fromNamespaceAndPath(
+            MOD_ID,
+            "textures/gui/petrification_image_background.png"
+    );
+
 	KeyMapping.Category ELDRITCH_ABILITIES = new KeyMapping.Category(Identifier.fromNamespaceAndPath(MOD_ID, "eldritch_abilities"));
 
 	//public final KeyMapping keyDebugCrash = new KeyMapping("key.debug.crash", InputConstants.Type.KEYSYM, 67, KeyMapping.Category.DEBUG);
@@ -128,5 +141,35 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                 }
             }
         });
+
+        HudElementRegistry.attachElementBefore(VanillaHudElements.CHAT, Identifier.fromNamespaceAndPath(MOD_ID, "before_chat"), UnfairWeaponsClient::render);
 	}
+
+    private static void render(GuiGraphics context, DeltaTracker tickCounter) {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player == null) return;
+
+        // Get screen dimensions
+        int screenWidth = context.guiWidth();
+        int screenHeight = context.guiHeight();
+
+        // Position on screen
+        int x = 0;
+        int y = 0;
+
+        // Image dimensions
+        int width = 32;
+        int height = 32;
+
+        if (mc.player.hasEffect(PETRIFICATION_EFFECT)){
+            MobEffectInstance effectInstance = mc.player.getEffect(PETRIFICATION_EFFECT);
+            assert effectInstance != null;
+            int effectInstanceAmplification = effectInstance.getAmplifier();
+
+            if (effectInstanceAmplification >= 1){
+                context.blit(PETRIFICATION_COOLDOWNS_BACKGROUND, x, y, 0, 0, width, height, width, height);
+            }
+        }
+
+    }
 }

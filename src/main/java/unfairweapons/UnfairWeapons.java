@@ -1,18 +1,28 @@
 package unfairweapons;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.api.ModInitializer;
 
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import unfairweapons.entity.PetrifyingEye;
+import unfairweapons.networking.ApplyPetrification3Packet;
+import unfairweapons.networking.SummonPetrifyingEyePacket;
 
 import static unfairweapons.CreativeTabRegister.registerItemGroups;
 import static unfairweapons.ItemsRegister.registerItems;
@@ -35,7 +45,14 @@ public class UnfairWeapons implements ModInitializer {
 
 			);
 
-
+	public static final EntityType<PetrifyingEye> PETRIFYING_EYE_ENTITY = Registry.register(
+			BuiltInRegistries.ENTITY_TYPE,
+			Identifier.fromNamespaceAndPath(MOD_ID, "petrifying_eye"),
+			EntityType.Builder.of(PetrifyingEye::new, MobCategory.MISC)
+					.sized(1.0f, 2.0f)
+					.clientTrackingRange(10)
+					.build(ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "petrifying_eye")))
+	);
 
 	@Override
 	public void onInitialize() {
@@ -44,6 +61,30 @@ public class UnfairWeapons implements ModInitializer {
 		// Proceed with mild caution.
 
 		LOGGER.info("Hello Fabric world!");
+
+		PayloadTypeRegistry.playC2S().register(ApplyPetrification3Packet.TYPE, ApplyPetrification3Packet.CODEC);
+
+		// Handle packet on server
+		ServerPlayNetworking.registerGlobalReceiver(ApplyPetrification3Packet.TYPE, (packet, context) -> {
+			context.server().execute(() -> {
+				context.player().addEffect(new MobEffectInstance(
+						PETRIFICATION_EFFECT,
+						90000,
+						2
+				));
+			});
+		});
+
+		PayloadTypeRegistry.playC2S().register(SummonPetrifyingEyePacket.TYPE, SummonPetrifyingEyePacket.CODEC);
+
+		ServerPlayNetworking.registerGlobalReceiver(SummonPetrifyingEyePacket.TYPE, (packet, context) -> {
+			ServerPlayer player = context.player();
+			ServerLevel level = player.level();
+			PetrifyingEye eye = new PetrifyingEye(PETRIFYING_EYE_ENTITY, level);
+			eye.setPos(player.position().x, player.position().y + player.getEyeHeight(), player.position().z);
+			level.addFreshEntity(eye);
+		});
+
 		registerItems();
 		registerItemGroups();
 	}

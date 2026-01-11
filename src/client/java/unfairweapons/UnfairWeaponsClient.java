@@ -1,9 +1,10 @@
 package unfairweapons;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.DeltaTracker;
@@ -12,13 +13,16 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.ARGB;
-import net.minecraft.util.Mth;
-import net.minecraft.util.Util;
 import net.minecraft.world.effect.MobEffectInstance;
 import org.lwjgl.glfw.GLFW;
+import unfairweapons.entity.PetrifyingEye;
+import unfairweapons.networking.ApplyPetrification3Packet;
+import unfairweapons.networking.SummonPetrifyingEyePacket;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -60,6 +64,11 @@ public class UnfairWeaponsClient implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
+
+        EntityRendererRegistry.register(
+                UnfairWeapons.PETRIFYING_EYE_ENTITY,
+                PetrifyingEyeRenderer::new
+        );
 
         final HashMap<String, Long> cooldowns = new HashMap<>();
         final int ABILITY_1_COOLDOWN = 100; // 5 seconds
@@ -108,9 +117,7 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                             continue;
                         }
 
-                        // Perform ability
-                        client.player.displayClientMessage(Component.literal("Ability 1 used!"), false);
-
+                        ClientPlayNetworking.send(new SummonPetrifyingEyePacket());
                         // Set cooldown
                         cooldowns.put(cooldownKey, currentTick + ABILITY_1_COOLDOWN);
 
@@ -182,13 +189,7 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                 MobEffectInstance effectInstance = client.player.getEffect(PETRIFICATION_EFFECT);
 
                 if (effectInstance.getAmplifier() == 1){
-                    MobEffectInstance petrificationLevel3 = new MobEffectInstance(
-                            PETRIFICATION_EFFECT,
-                            90000,
-                            2
-                    );
-
-                    client.player.addEffect(petrificationLevel3);
+                    ClientPlayNetworking.send(new ApplyPetrification3Packet());
                 }
             }
         });
@@ -236,7 +237,7 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                     context.blit(
                             RenderPipelines.GUI_TEXTURED,
                             PETRIFICATION_GUI_NEEDLE_FULL,
-                            x + 109, y + 9, 0, 0,
+                            x + 105, y + 8, 0, 0,
                             13, 16,
                             13, 16
                     );
@@ -245,7 +246,7 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                     context.blit(
                             RenderPipelines.GUI_TEXTURED,
                             PETRIFICATION_GUI_NEEDLE_EMPTY,
-                            x + 109, y + 9, 0, 0,
+                            x + 105, y + 8, 0, 0,
                             13, 16,
                             13, 16
                     );
@@ -258,5 +259,32 @@ public class UnfairWeaponsClient implements ClientModInitializer {
 
         }
 
+    }
+}
+
+class PetrifyingEyeRenderer
+        extends EntityRenderer<PetrifyingEye, EntityRenderState> {
+
+    private static final Identifier TEXTURE =
+            Identifier.fromNamespaceAndPath("minecraft", "textures/entity/pig/pig.png");
+
+    public PetrifyingEyeRenderer(EntityRendererProvider.Context context) {
+        super(context);
+    }
+
+    @Override
+    public EntityRenderState createRenderState() {
+        return new EntityRenderState();
+    }
+
+    @Override
+    public void extractRenderState(PetrifyingEye entity,
+                                   EntityRenderState state,
+                                   float partialTick) {
+        super.extractRenderState(entity, state, partialTick);
+    }
+
+    public Identifier getTextureLocation(EntityRenderState state) {
+        return TEXTURE;
     }
 }

@@ -25,13 +25,12 @@ public class PetrifyingEye extends Entity {
     private int maxLifespan;
     private int currentLifespan;
 
-    // Static map tracks how many eyes are affecting each player
     private static final Map<UUID, Integer> affectedPlayerCounts = new HashMap<>();
 
     public PetrifyingEye(EntityType<?> type, Level level) {
         super(type, level);
         this.noPhysics = false;
-        this.maxLifespan = 1200; // lifespan in ticks
+        this.maxLifespan = 1200;
         this.currentLifespan = 0;
     }
 
@@ -48,13 +47,10 @@ public class PetrifyingEye extends Entity {
     public void tick() {
         super.tick();
 
-        // Stop horizontal movement
         this.setDeltaMovement(0, this.getDeltaMovement().y, 0);
 
         if (!this.level().isClientSide() && this.level() instanceof ServerLevel serverLevel) {
             spawnParticleRing(serverLevel);
-            tickEffect(serverLevel);         // handle attribute changes
-            applyPotionEffects(serverLevel); // continuous potion effects
         }
 
         this.currentLifespan++;
@@ -86,24 +82,23 @@ public class PetrifyingEye extends Entity {
         }
     }
 
-    // Get all players currently within 10 blocks
     private Set<Player> getPlayersInRange(ServerLevel level) {
         return new HashSet<>(level.getEntitiesOfClass(
                 Player.class,
-                new AABB(this.getOnPos()).inflate(10.0)
+                new AABB(this.getOnPos()).inflate(5)
         ));
     }
 
-    // Apply attributes (gravity & scale)
     private void applyAttributes(Player player) {
-        AttributeInstance gravity = player.getAttribute(Attributes.GRAVITY);
-        if (gravity != null) gravity.setBaseValue(0.02D);
+        if (!player.hasEffect(PETRIFICATION_EFFECT)) {
+            AttributeInstance gravity = player.getAttribute(Attributes.GRAVITY);
+            if (gravity != null) gravity.setBaseValue(10000);
 
-        AttributeInstance scale = player.getAttribute(Attributes.SCALE);
-        if (scale != null) scale.setBaseValue(0.5D);
+            AttributeInstance scale = player.getAttribute(Attributes.SCALE);
+            if (scale != null) scale.setBaseValue(1.0D);
+        }
     }
 
-    // Reset attributes back to vanilla
     private void resetAttributes(Player player) {
         AttributeInstance gravity = player.getAttribute(Attributes.GRAVITY);
         if (gravity != null) gravity.setBaseValue(0.08D);
@@ -112,21 +107,17 @@ public class PetrifyingEye extends Entity {
         if (scale != null) scale.setBaseValue(1.0D);
     }
 
-    // Handles applying and removing attributes with reference counting
     private void tickEffect(ServerLevel level) {
         Set<Player> playersInRange = getPlayersInRange(level);
 
-        // Increment reference count for players currently in range
         for (Player player : playersInRange) {
             UUID uuid = player.getUUID();
             int count = affectedPlayerCounts.getOrDefault(uuid, 0);
             if (count == 0) {
-                applyAttributes(player); // first eye affecting player
             }
             affectedPlayerCounts.put(uuid, count + 1);
         }
 
-        // Decrement reference counts for players leaving this eye
         Iterator<Map.Entry<UUID, Integer>> it = affectedPlayerCounts.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry<UUID, Integer> entry = it.next();
@@ -145,7 +136,6 @@ public class PetrifyingEye extends Entity {
         }
     }
 
-    // Continuous potion effect reapplication
     private void applyPotionEffects(ServerLevel level) {
         for (Player player : level.getEntitiesOfClass(
                 Player.class,

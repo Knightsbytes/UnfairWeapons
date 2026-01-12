@@ -81,7 +81,7 @@ public class UnfairWeapons implements ModInitializer {
 			ServerPlayer player = context.player();
 			ServerLevel level = player.level();
 			PetrifyingEye eye = new PetrifyingEye(PETRIFYING_EYE_ENTITY, level);
-			eye.setPos(player.position().x, player.position().y + player.getEyeHeight(), player.position().z);
+			eye.setPos(player.position().x, player.position().y, player.position().z);
 			level.addFreshEntity(eye);
 		});
 

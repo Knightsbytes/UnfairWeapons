@@ -3,7 +3,6 @@ package unfairweapons.entity;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -16,7 +15,6 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
-import unfairweapons.PetrificationEffect;
 
 import java.util.*;
 
@@ -26,50 +24,46 @@ public class PetrifyingEye extends Entity {
 
     private int maxLifespan;
     private int currentLifespan;
-    private final Set<UUID> affectedPlayers = new HashSet<>();
+
+    // Static map tracks how many eyes are affecting each player
+    private static final Map<UUID, Integer> affectedPlayerCounts = new HashMap<>();
 
     public PetrifyingEye(EntityType<?> type, Level level) {
         super(type, level);
         this.noPhysics = false;
-        this.maxLifespan = 1200; //In ticks
+        this.maxLifespan = 1200; // lifespan in ticks
         this.currentLifespan = 0;
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        // Define any synced data here
-    }
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {}
 
     @Override
-    public void readAdditionalSaveData(ValueInput input) {
-        // Load data from ValueInput
-    }
+    public void readAdditionalSaveData(ValueInput input) {}
 
     @Override
-    public void addAdditionalSaveData(ValueOutput output) {
-        // Save data to ValueOutput
-    }
+    public void addAdditionalSaveData(ValueOutput output) {}
 
     @Override
     public void tick() {
         super.tick();
+
+        // Stop horizontal movement
         this.setDeltaMovement(0, this.getDeltaMovement().y, 0);
 
         if (!this.level().isClientSide() && this.level() instanceof ServerLevel serverLevel) {
             spawnParticleRing(serverLevel);
+            tickEffect(serverLevel);         // handle attribute changes
+            applyPotionEffects(serverLevel); // continuous potion effects
         }
 
-        this.currentLifespan += 1;
-
-        if (this.currentLifespan >= this.maxLifespan){
+        this.currentLifespan++;
+        if (this.currentLifespan >= this.maxLifespan) {
             this.discard();
         }
     }
 
-    @Override
-    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
-        return false; // Invulnerable
-    }
+    @Override public boolean hurtServer(ServerLevel level, DamageSource source, float amount) { return false;}
 
     private void spawnParticleRing(ServerLevel level) {
         double radius = 5;
@@ -92,48 +86,25 @@ public class PetrifyingEye extends Entity {
         }
     }
 
-    private Set<UUID> getPlayersInRange(ServerLevel level) {
-        Set<UUID> inRange = new HashSet<>();
-
-        for (Player player : level.getEntitiesOfClass(
+    // Get all players currently within 10 blocks
+    private Set<Player> getPlayersInRange(ServerLevel level) {
+        return new HashSet<>(level.getEntitiesOfClass(
                 Player.class,
                 new AABB(this.getOnPos()).inflate(10.0)
-        )) {
-            inRange.add(player.getUUID());
-        }
-
-        return inRange;
+        ));
     }
 
-    private void applyToPlayer(Player player){
-
-
-        List<MobEffectInstance> effectInstances = List.of(
-                new MobEffectInstance(MobEffects.SLOWNESS, 10, 5),
-                new MobEffectInstance(MobEffects.WEAKNESS, 10, 5),
-                new MobEffectInstance(MobEffects.WITHER, 10, 5),
-                new MobEffectInstance(MobEffects.MINING_FATIGUE, 10, 5),
-                new MobEffectInstance(MobEffects.SLOW_FALLING, 200, 5)
-        );
-
+    // Apply attributes (gravity & scale)
+    private void applyAttributes(Player player) {
         AttributeInstance gravity = player.getAttribute(Attributes.GRAVITY);
-        if (gravity != null) {
-            gravity.setBaseValue(10000D);
-        }
+        if (gravity != null) gravity.setBaseValue(0.02D);
 
         AttributeInstance scale = player.getAttribute(Attributes.SCALE);
-        if (scale != null) {
-            scale.setBaseValue(1.0D);
-        }
-
-        scale.removeModifiers();
-
-        for (MobEffectInstance effectInstance : effectInstances){
-            player.addEffect(effectInstance);
-        }
+        if (scale != null) scale.setBaseValue(0.5D);
     }
 
-    private void resetPlayer(Player player) {
+    // Reset attributes back to vanilla
+    private void resetAttributes(Player player) {
         AttributeInstance gravity = player.getAttribute(Attributes.GRAVITY);
         if (gravity != null) gravity.setBaseValue(0.08D);
 
@@ -141,30 +112,55 @@ public class PetrifyingEye extends Entity {
         if (scale != null) scale.setBaseValue(1.0D);
     }
 
+    // Handles applying and removing attributes with reference counting
     private void tickEffect(ServerLevel level) {
-        Set<UUID> currentlyInRange = getPlayersInRange(level);
+        Set<Player> playersInRange = getPlayersInRange(level);
 
-        // Players who just entered
-        for (UUID uuid : currentlyInRange) {
-            if (!affectedPlayers.contains(uuid)) {
-                Player player = level.getPlayerByUUID(uuid);
-                if (player != null) {
-                    applyToPlayer(player);
-                    affectedPlayers.add(uuid);
+        // Increment reference count for players currently in range
+        for (Player player : playersInRange) {
+            UUID uuid = player.getUUID();
+            int count = affectedPlayerCounts.getOrDefault(uuid, 0);
+            if (count == 0) {
+                applyAttributes(player); // first eye affecting player
+            }
+            affectedPlayerCounts.put(uuid, count + 1);
+        }
+
+        // Decrement reference counts for players leaving this eye
+        Iterator<Map.Entry<UUID, Integer>> it = affectedPlayerCounts.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<UUID, Integer> entry = it.next();
+            UUID uuid = entry.getKey();
+            Player player = level.getPlayerByUUID(uuid);
+
+            if (!playersInRange.contains(player)) {
+                int newCount = entry.getValue() - 1;
+                if (newCount <= 0) {
+                    if (player != null) resetAttributes(player);
+                    it.remove();
+                } else {
+                    entry.setValue(newCount);
                 }
             }
         }
+    }
 
-        // Players who just left
-        Iterator<UUID> it = affectedPlayers.iterator();
-        while (it.hasNext()) {
-            UUID uuid = it.next();
-            if (!currentlyInRange.contains(uuid)) {
-                Player player = level.getPlayerByUUID(uuid);
-                if (player != null) {
-                    resetPlayer(player);
+    // Continuous potion effect reapplication
+    private void applyPotionEffects(ServerLevel level) {
+        for (Player player : level.getEntitiesOfClass(
+                Player.class,
+                new AABB(this.getOnPos()).inflate(10.0)
+        )) {
+            if (!player.hasEffect(PETRIFICATION_EFFECT)) {
+                for (var effectType : List.of(
+                        MobEffects.SLOWNESS,
+                        MobEffects.WEAKNESS,
+                        MobEffects.WITHER,
+                        MobEffects.MINING_FATIGUE,
+                        MobEffects.SLOW_FALLING
+                )) {
+                    player.addEffect(new MobEffectInstance(effectType, 40, 5, false, false, true));
                 }
-                it.remove();
             }
         }
     }

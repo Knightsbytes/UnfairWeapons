@@ -22,17 +22,19 @@ import static unfairweapons.UnfairWeapons.PETRIFICATION_EFFECT;
 
 public class PetrifyingEye extends Entity {
 
-    private int maxLifespan;
-    private int currentLifespan;
+    private static final double EFFECT_RADIUS = 5.0; //Actually diameter
+    private static final int MAX_LIFESPAN = 1200;
 
     private static final Map<UUID, Integer> affectedPlayerCounts = new HashMap<>();
+    private final Set<UUID> playersInRangeLastTick = new HashSet<>();
+
+    private int lifespan = 0;
 
     public PetrifyingEye(EntityType<?> type, Level level) {
         super(type, level);
         this.noPhysics = false;
-        this.maxLifespan = 1200;
-        this.currentLifespan = 0;
     }
+
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {}
@@ -44,6 +46,9 @@ public class PetrifyingEye extends Entity {
     public void addAdditionalSaveData(ValueOutput output) {}
 
     @Override
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) { return false;}
+
+    @Override
     public void tick() {
         super.tick();
 
@@ -51,18 +56,109 @@ public class PetrifyingEye extends Entity {
 
         if (!this.level().isClientSide() && this.level() instanceof ServerLevel serverLevel) {
             spawnParticleRing(serverLevel);
+            tickAttributes(serverLevel);
+            applyPotionEffects(serverLevel);
         }
 
-        this.currentLifespan++;
-        if (this.currentLifespan >= this.maxLifespan) {
+        lifespan++;
+        if (lifespan >= MAX_LIFESPAN) {
             this.discard();
         }
     }
 
-    @Override public boolean hurtServer(ServerLevel level, DamageSource source, float amount) { return false;}
+    @Override
+    public void remove(RemovalReason reason) {
+        super.remove(reason);
+
+        if (this.level() instanceof ServerLevel level) {
+            for (UUID uuid : playersInRangeLastTick) {
+                Player player = level.getPlayerByUUID(uuid);
+                decrementAndMaybeReset(player, uuid);
+            }
+        }
+    }
+
+    private AABB getEffectAABB() {
+        return new AABB(this.position(), this.position()).inflate(EFFECT_RADIUS);
+    }
+
+    private void applyAttributes(Player player) {
+        if (!player.hasEffect(PETRIFICATION_EFFECT)) {
+            AttributeInstance gravity = player.getAttribute(Attributes.GRAVITY);
+            if (gravity != null) gravity.setBaseValue(1000000000);
+
+            AttributeInstance scale = player.getAttribute(Attributes.SCALE);
+            if (scale != null) scale.removeModifiers();
+            if (scale != null) scale.setBaseValue(1.0D);
+        }
+    }
+
+    private void resetAttributes(Player player) {
+        AttributeInstance gravity = player.getAttribute(Attributes.GRAVITY);
+        if (gravity != null) gravity.setBaseValue(0.08D);
+
+        AttributeInstance scale = player.getAttribute(Attributes.SCALE);
+        if (scale != null) scale.setBaseValue(1.0D);
+    }
+
+    private void decrementAndMaybeReset(Player player, UUID uuid) {
+        int count = affectedPlayerCounts.getOrDefault(uuid, 0) - 1;
+
+        if (count <= 0) {
+            affectedPlayerCounts.remove(uuid);
+            if (player != null) resetAttributes(player);
+        } else {
+            affectedPlayerCounts.put(uuid, count);
+        }
+    }
+
+    private void tickAttributes(ServerLevel level) {
+        Set<Player> playersNow = new HashSet<>(
+                level.getEntitiesOfClass(Player.class, getEffectAABB())
+        );
+
+        Set<UUID> playersNowIds = new HashSet<>();
+        for (Player player : playersNow) {
+            playersNowIds.add(player.getUUID());
+        }
+        for (UUID uuid : playersNowIds) {
+            if (!playersInRangeLastTick.contains(uuid)) {
+                Player player = level.getPlayerByUUID(uuid);
+                if (player != null) {
+                    int count = affectedPlayerCounts.getOrDefault(uuid, 0);
+                    if (count == 0) {
+                        applyAttributes(player);
+                    }
+                    affectedPlayerCounts.put(uuid, count + 1);
+                }
+            }
+        }
+
+        for (UUID uuid : playersInRangeLastTick) {
+            if (!playersNowIds.contains(uuid)) {
+                Player player = level.getPlayerByUUID(uuid);
+                decrementAndMaybeReset(player, uuid);
+            }
+        }
+
+        playersInRangeLastTick.clear();
+        playersInRangeLastTick.addAll(playersNowIds);
+    }
+
+    private void applyPotionEffects(ServerLevel level) {
+        for (Player player : level.getEntitiesOfClass(Player.class, getEffectAABB())) {
+            if (!player.hasEffect(PETRIFICATION_EFFECT)) {
+                player.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 40, 5, false, false, true));
+                player.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 40, 5, false, false, true));
+                player.addEffect(new MobEffectInstance(MobEffects.WITHER, 40, 5, false, false, true));
+                player.addEffect(new MobEffectInstance(MobEffects.MINING_FATIGUE, 40, 5, false, false, true));
+                player.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 40, 5, false, false, true));
+            }
+        }
+    }
 
     private void spawnParticleRing(ServerLevel level) {
-        double radius = 5;
+        double radius = 5.0;
         int particleCount = 20;
 
         for (int i = 0; i < particleCount; i++) {
@@ -79,79 +175,6 @@ public class PetrifyingEye extends Entity {
                     0, 0, 0,
                     0.0
             );
-        }
-    }
-
-    private Set<Player> getPlayersInRange(ServerLevel level) {
-        return new HashSet<>(level.getEntitiesOfClass(
-                Player.class,
-                new AABB(this.getOnPos()).inflate(5)
-        ));
-    }
-
-    private void applyAttributes(Player player) {
-        if (!player.hasEffect(PETRIFICATION_EFFECT)) {
-            AttributeInstance gravity = player.getAttribute(Attributes.GRAVITY);
-            if (gravity != null) gravity.setBaseValue(10000);
-
-            AttributeInstance scale = player.getAttribute(Attributes.SCALE);
-            if (scale != null) scale.setBaseValue(1.0D);
-        }
-    }
-
-    private void resetAttributes(Player player) {
-        AttributeInstance gravity = player.getAttribute(Attributes.GRAVITY);
-        if (gravity != null) gravity.setBaseValue(0.08D);
-
-        AttributeInstance scale = player.getAttribute(Attributes.SCALE);
-        if (scale != null) scale.setBaseValue(1.0D);
-    }
-
-    private void tickEffect(ServerLevel level) {
-        Set<Player> playersInRange = getPlayersInRange(level);
-
-        for (Player player : playersInRange) {
-            UUID uuid = player.getUUID();
-            int count = affectedPlayerCounts.getOrDefault(uuid, 0);
-            if (count == 0) {
-            }
-            affectedPlayerCounts.put(uuid, count + 1);
-        }
-
-        Iterator<Map.Entry<UUID, Integer>> it = affectedPlayerCounts.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry<UUID, Integer> entry = it.next();
-            UUID uuid = entry.getKey();
-            Player player = level.getPlayerByUUID(uuid);
-
-            if (!playersInRange.contains(player)) {
-                int newCount = entry.getValue() - 1;
-                if (newCount <= 0) {
-                    if (player != null) resetAttributes(player);
-                    it.remove();
-                } else {
-                    entry.setValue(newCount);
-                }
-            }
-        }
-    }
-
-    private void applyPotionEffects(ServerLevel level) {
-        for (Player player : level.getEntitiesOfClass(
-                Player.class,
-                new AABB(this.getOnPos()).inflate(10.0)
-        )) {
-            if (!player.hasEffect(PETRIFICATION_EFFECT)) {
-                for (var effectType : List.of(
-                        MobEffects.SLOWNESS,
-                        MobEffects.WEAKNESS,
-                        MobEffects.WITHER,
-                        MobEffects.MINING_FATIGUE,
-                        MobEffects.SLOW_FALLING
-                )) {
-                    player.addEffect(new MobEffectInstance(effectType, 40, 5, false, false, true));
-                }
-            }
         }
     }
 }

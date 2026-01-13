@@ -86,18 +86,21 @@ public class UnfairWeaponsClient implements ClientModInitializer {
             String cooldownKey3 = playerId + "_ability3";
 
             if (cooldowns.getOrDefault(cooldownKey1, 0L) > currentTick) {
-                long remaining1 = cooldowns.get(cooldownKey1) - currentTick;
-                PetrificationCooldown1 = remaining1 / 20;
+                PetrificationCooldown1 = cooldowns.get(cooldownKey1) - currentTick;
+            }else {
+                PetrificationCooldown1 = 0;
             }
 
             if (cooldowns.getOrDefault(cooldownKey2, 0L) > currentTick) {
-                long remaining2 = cooldowns.get(cooldownKey2) - currentTick;
-                PetrificationCooldown2 = remaining2 / 20;
+                PetrificationCooldown2 = cooldowns.get(cooldownKey2) - currentTick;
+            }else {
+                PetrificationCooldown2 = 0;
             }
 
             if (cooldowns.getOrDefault(cooldownKey3, 0L) > currentTick) {
-                long remaining3 = cooldowns.get(cooldownKey3) - currentTick;
-                PetrificationCooldown3 = remaining3 / 20;
+                PetrificationCooldown3 = cooldowns.get(cooldownKey3) - currentTick;
+            }else {
+                PetrificationCooldown3 = 0;
             }
 
             // Ability 1
@@ -252,9 +255,9 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                     );
                 }
 
-                context.drawString(font, String.valueOf((float) PetrificationCooldown1), x + 20, y + 14, 0xFFFFFFFF, true);
-                context.drawString(font, String.valueOf((float) PetrificationCooldown2), x + 54, y + 14, 0xFFFFFFFF, true);
-                context.drawString(font, String.valueOf((float) PetrificationCooldown3), x + 87, y + 14, 0xFFFFFFFF, true);
+                context.drawString(font, String.format("%.1f", PetrificationCooldown1 / 20.0), x + 20, y + 14, 0xFFFFFFFF, true);
+                context.drawString(font, String.format("%.1f", PetrificationCooldown2 / 20.0), x + 54, y + 14, 0xFFFFFFFF, true);
+                context.drawString(font, String.format("%.1f", PetrificationCooldown3 / 20.0), x + 87, y + 14, 0xFFFFFFFF, true);
             }
 
         }

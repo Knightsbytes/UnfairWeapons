@@ -14,8 +14,8 @@ import static net.minecraft.world.effect.MobEffects.*;
 import static unfairweapons.UnfairWeapons.MOD_ID;
 import static unfairweapons.UnfairWeapons.PETRIFICATION_EFFECT;
 
-public class PetrificationEffect extends MobEffect {
-    protected PetrificationEffect() {
+public class ImmortalityEffect extends MobEffect {
+    protected ImmortalityEffect() {
         super(MobEffectCategory.HARMFUL, 0x59FF6C);
     }
 
@@ -29,26 +29,9 @@ public class PetrificationEffect extends MobEffect {
     @Override
     public boolean applyEffectTick(ServerLevel world, LivingEntity entity, int amplifier) {
         if (entity instanceof Player) {
-            if (entity.isOnFire()){
-                entity.clearFire();
+            if (entity.getHealth() <= entity.getMaxHealth()){
+                entity.heal(entity.getMaxHealth());
             }
-
-            if (entity.getHealth() <= 20){
-                MobEffectInstance HealthRegen = new MobEffectInstance(REGENERATION, 200, 3);
-                entity.addEffect(HealthRegen);
-            }
-
-            entity.removeEffect(NAUSEA);
-            entity.removeEffect(POISON);
-            entity.removeEffect(WEAKNESS);
-            entity.removeEffect(SLOWNESS);
-            entity.removeEffect(BLINDNESS);
-            entity.removeEffect(JUMP_BOOST);
-            entity.removeEffect(WITHER);
-            entity.removeEffect(MINING_FATIGUE);
-            entity.removeEffect(OOZING);
-
-            entity.isInPowderSnow = false;
         }
 
         return super.applyEffectTick(world, entity, amplifier);

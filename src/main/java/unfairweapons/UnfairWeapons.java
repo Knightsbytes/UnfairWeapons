@@ -14,15 +14,21 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.AABB;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import unfairweapons.entity.PetrifyingEye;
 import unfairweapons.networking.ApplyPetrification3Packet;
+import unfairweapons.networking.PetrifiedAbility2Packet;
 import unfairweapons.networking.SummonPetrifyingEyePacket;
+
+import java.util.List;
 
 import static unfairweapons.CreativeTabRegister.registerItemGroups;
 import static unfairweapons.ItemsRegister.registerItems;
@@ -43,6 +49,11 @@ public class UnfairWeapons implements ModInitializer {
 					.addAttributeModifier(Attributes.ATTACK_DAMAGE, Identifier.fromNamespaceAndPath(MOD_ID, "effect.petrification.strength"), 6.0, AttributeModifier.Operation.ADD_VALUE)
 					.addAttributeModifier(Attributes.MOVEMENT_SPEED, Identifier.fromNamespaceAndPath(MOD_ID,"effect.petrification.speed"), 0.4F, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
 
+			);
+
+	public static final Holder<MobEffect> IMMORTALITY_EFFECT =
+			Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT, Identifier.fromNamespaceAndPath(MOD_ID, "immortality"), new ImmortalityEffect()
+					.addAttributeModifier(Attributes.ATTACK_DAMAGE, Identifier.fromNamespaceAndPath(MOD_ID, "effect.immortality.strength"), 99999999999.0, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
 			);
 
 	public static final EntityType<PetrifyingEye> PETRIFYING_EYE_ENTITY = Registry.register(
@@ -83,6 +94,24 @@ public class UnfairWeapons implements ModInitializer {
 			PetrifyingEye eye = new PetrifyingEye(PETRIFYING_EYE_ENTITY, level);
 			eye.setPos(player.position().x, player.position().y, player.position().z);
 			level.addFreshEntity(eye);
+		});
+
+		PayloadTypeRegistry.playC2S().register(PetrifiedAbility2Packet.TYPE, PetrifiedAbility2Packet.CODEC);
+		ServerPlayNetworking.registerGlobalReceiver(SummonPetrifyingEyePacket.TYPE, (packet, context) -> {
+			ServerPlayer player = context.player();
+			ServerLevel level = player.level();
+
+			player.addEffect(new MobEffectInstance(MobEffects.INSTANT_HEALTH, 1, 100, false, false, true));
+			player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 1, 5, false, false, true));
+
+			AABB affectedEntities = new AABB(player.position(), player.position()).inflate(5);
+			for (Player victim : level.getEntitiesOfClass(Player.class, affectedEntities)){
+				victim.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 40, 1, false, false, true));
+				victim.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 40, 1, false, false, true));
+				victim.addEffect(new MobEffectInstance(MobEffects.WITHER, 40, 5, false, false, true));
+				victim.addEffect(new MobEffectInstance(MobEffects.MINING_FATIGUE, 40, 1, false, false, true));
+				victim.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 40, 1, false, false, true));
+			}
 		});
 
 		registerItems();

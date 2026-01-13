@@ -85,11 +85,11 @@ public class PetrifyingEye extends Entity {
     private void applyAttributes(Player player) {
         if (!player.hasEffect(PETRIFICATION_EFFECT)) {
             AttributeInstance gravity = player.getAttribute(Attributes.GRAVITY);
-            if (gravity != null) gravity.setBaseValue(1000000000);
+            if (gravity != null) gravity.setBaseValue(500);
 
             AttributeInstance scale = player.getAttribute(Attributes.SCALE);
             if (scale != null) scale.removeModifiers();
-            if (scale != null) scale.setBaseValue(1.0D);
+            if (scale != null) scale.setBaseValue(1.5D);
         }
     }
 
@@ -159,7 +159,7 @@ public class PetrifyingEye extends Entity {
 
     private void spawnParticleRing(ServerLevel level) {
         double radius = 5.0;
-        int particleCount = 20;
+        int particleCount = 200;
 
         for (int i = 0; i < particleCount; i++) {
             double angle = (2 * Math.PI * i) / particleCount;
@@ -167,11 +167,11 @@ public class PetrifyingEye extends Entity {
             double zOffset = Math.sin(angle) * radius;
 
             level.sendParticles(
-                    ParticleTypes.END_ROD,
+                    ParticleTypes.ASH,
                     this.getX() + xOffset,
                     this.getY() + 0.5,
                     this.getZ() + zOffset,
-                    1,
+                    2,
                     0, 0, 0,
                     0.0
             );

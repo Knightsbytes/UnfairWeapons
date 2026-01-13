@@ -22,6 +22,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import org.lwjgl.glfw.GLFW;
 import unfairweapons.entity.PetrifyingEye;
 import unfairweapons.networking.ApplyPetrification3Packet;
+import unfairweapons.networking.PetrifiedAbility2Packet;
 import unfairweapons.networking.SummonPetrifyingEyePacket;
 
 import java.util.HashMap;
@@ -32,19 +33,13 @@ import static unfairweapons.UnfairWeapons.PETRIFICATION_EFFECT;
 
 public class UnfairWeaponsClient implements ClientModInitializer {
 
-    private static final Identifier PETRIFICATION_COOLDOWNS_BACKGROUND = Identifier.fromNamespaceAndPath(
-            MOD_ID,
-            "textures/gui/petrification_image_background.png"
+    private static final Identifier PETRIFICATION_COOLDOWNS_BACKGROUND = Identifier.fromNamespaceAndPath(MOD_ID, "textures/gui/petrification_image_background.png"
     );
 
-    private static final Identifier PETRIFICATION_GUI_NEEDLE_FULL = Identifier.fromNamespaceAndPath(
-            MOD_ID,
-            "textures/gui/petrification_gui_needle_full.png"
+    private static final Identifier PETRIFICATION_GUI_NEEDLE_FULL = Identifier.fromNamespaceAndPath(MOD_ID, "textures/gui/petrification_gui_needle_full.png"
     );
 
-    private static final Identifier PETRIFICATION_GUI_NEEDLE_EMPTY = Identifier.fromNamespaceAndPath(
-            MOD_ID,
-            "textures/gui/petrification_gui_needle_empty.png"
+    private static final Identifier PETRIFICATION_GUI_NEEDLE_EMPTY = Identifier.fromNamespaceAndPath(MOD_ID, "textures/gui/petrification_gui_needle_empty.png"
     );
 
 	KeyMapping.Category ELDRITCH_ABILITIES = new KeyMapping.Category(Identifier.fromNamespaceAndPath(MOD_ID, "eldritch_abilities"));
@@ -71,9 +66,9 @@ public class UnfairWeaponsClient implements ClientModInitializer {
         );
 
         final HashMap<String, Long> cooldowns = new HashMap<>();
-        final int ABILITY_1_COOLDOWN = 100; // 5 seconds
-        final int ABILITY_2_COOLDOWN = 200; // 10 seconds
-        final int ABILITY_3_COOLDOWN = 300; // 15 seconds
+        final int ABILITY_1_COOLDOWN = 1200;
+        final int ABILITY_2_COOLDOWN = 200;
+        final int ABILITY_3_COOLDOWN = 300;
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (client.player == null || client.level == null) return;
@@ -147,10 +142,8 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                             continue;
                         }
 
-                        // Perform ability
-                        client.player.displayClientMessage(Component.literal("Ability 2 used!"), false);
+                        ClientPlayNetworking.send(new PetrifiedAbility2Packet());
 
-                        // Set cooldown
                         cooldowns.put(cooldownKey, currentTick + ABILITY_2_COOLDOWN);
 
                     } else {

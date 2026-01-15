@@ -111,7 +111,7 @@ public class TentacleBlock extends Block implements SimpleWaterloggedBlock{
 
             Vec3 velocity = entity.getDeltaMovement();
             double speed = velocity.horizontalDistance();
-            if (speed < 0) continue;
+            if (speed > 0) continue;
 
             float damage = (float) (speed * 6.0F);
             living.hurt(level.damageSources().magic(), damage);
@@ -148,6 +148,11 @@ public class TentacleBlock extends Block implements SimpleWaterloggedBlock{
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(WATERLOGGED, FACING);
+        this.registerDefaultState(
+                this.defaultBlockState()
+                        .setValue(WATERLOGGED, false)
+                        .setValue(LEVEL, 0)
+        );
     }
 
     @Override

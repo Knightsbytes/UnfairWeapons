@@ -3,6 +3,7 @@ package unfairweapons.items.block;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -21,6 +22,7 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -81,28 +83,49 @@ public class TentacleBlock extends Block implements SimpleWaterloggedBlock{
     }
 
     @Override
+    protected VoxelShape getCollisionShape(
+            BlockState state,
+            BlockGetter level,
+            BlockPos pos,
+            CollisionContext context
+    ) {
+        return Shapes.empty();
+    }
+
+    @Override
     protected FluidState getFluidState(BlockState blockState) {
         return blockState.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(blockState);
     }
 
     @Override
-    public void stepOn(Level level, BlockPos pos, BlockState state, Entity entity) {
-        if (!level.isClientSide() && entity instanceof LivingEntity living) {
-            Vec3 velocity = entity.getDeltaMovement();
-            double speed = velocity.horizontalDistance(); // Only horizontal speed
-            float damage = (float) (speed * 10.0);
-
-            if (damage > 0.1f) {
-                living.hurt(level.damageSources().generic(), damage);
-            }
-        }
-
-        super.stepOn(level, pos, state, entity);
+    public boolean isRandomlyTicking(BlockState state) {
+        return true;
     }
 
     @Override
-    protected VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
-        return (VoxelShape)SHAPES.get(blockState.getValue(FACING));
+    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        AABB box = new AABB(pos);
+
+        for (Entity entity : level.getEntities(null, box)) {
+            if (!(entity instanceof LivingEntity living)) continue;
+
+            Vec3 velocity = entity.getDeltaMovement();
+            double speed = velocity.horizontalDistance();
+            if (speed < 0.05) continue;
+
+            float damage = (float) (speed * 6.0F);
+            living.hurt(level.damageSources().magic(), damage);
+        }
+    }
+
+    @Override
+    public VoxelShape getShape(
+            BlockState state,
+            BlockGetter world,
+            BlockPos pos,
+            CollisionContext context
+    ) {
+        return SHAPES.get(state.getValue(FACING));
     }
 
     @Override
@@ -124,7 +147,7 @@ public class TentacleBlock extends Block implements SimpleWaterloggedBlock{
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(WATERLOGGED);
+        builder.add(WATERLOGGED, FACING);
     }
 
     @Override

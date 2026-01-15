@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "unfair-items:block/eldritch_tentacle_block"
+      "model": "unfair-weapons:block/eldritch_tentacle_block"
     }
   }
 }

@@ -11,6 +11,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.*;
+import net.minecraft.world.level.block.BarrierBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
@@ -33,6 +34,11 @@ public class TentacleBlock extends Block implements SimpleWaterloggedBlock{
     public static final MapCodec<TentacleBlock> CODEC = simpleCodec(TentacleBlock::new);
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final IntegerProperty LEVEL = BlockStateProperties.LEVEL;
+
+    @Override
+    public MapCodec<TentacleBlock> codec() {
+        return CODEC;
+    }
 
     public TentacleBlock(Properties properties) {
         super(properties);

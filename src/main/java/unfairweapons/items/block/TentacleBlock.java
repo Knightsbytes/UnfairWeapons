@@ -83,7 +83,7 @@ public class TentacleBlock extends Block implements SimpleWaterloggedBlock{
     }
 
     @Override
-    protected VoxelShape getCollisionShape(
+    public VoxelShape getCollisionShape(
             BlockState state,
             BlockGetter level,
             BlockPos pos,
@@ -121,11 +121,11 @@ public class TentacleBlock extends Block implements SimpleWaterloggedBlock{
     @Override
     public VoxelShape getShape(
             BlockState state,
-            BlockGetter world,
+            BlockGetter level,
             BlockPos pos,
             CollisionContext context
     ) {
-        return SHAPES.get(state.getValue(FACING));
+        return Shapes.block();
     }
 
     @Override

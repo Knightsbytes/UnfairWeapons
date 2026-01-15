@@ -29,7 +29,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jspecify.annotations.Nullable;
 
-public class TentacleBlock extends Block {
+public class TentacleBlock extends Block implements SimpleWaterloggedBlock{
     public static final MapCodec<TentacleBlock> CODEC = simpleCodec(TentacleBlock::new);
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final IntegerProperty LEVEL = BlockStateProperties.LEVEL;
@@ -119,5 +119,17 @@ public class TentacleBlock extends Block {
         builder.add(WATERLOGGED);
     }
 
+    @Override
+    public ItemStack pickupBlock(@Nullable LivingEntity livingEntity, LevelAccessor levelAccessor, BlockPos blockPos, BlockState blockState) {
+        return livingEntity instanceof Player player && player.isCreative()
+                ? SimpleWaterloggedBlock.super.pickupBlock(livingEntity, levelAccessor, blockPos, blockState)
+                : ItemStack.EMPTY;
+    }
 
+    @Override
+    public boolean canPlaceLiquid(@Nullable LivingEntity livingEntity, BlockGetter blockGetter, BlockPos blockPos, BlockState blockState, Fluid fluid) {
+        return livingEntity instanceof Player player && player.isCreative()
+                ? SimpleWaterloggedBlock.super.canPlaceLiquid(livingEntity, blockGetter, blockPos, blockState, fluid)
+                : false;
+    }
 }

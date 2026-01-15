@@ -37,6 +37,7 @@ public class CreativeTabRegister {
                             output.accept(SUPERCONDUCTOR_BOOTS);
                             output.accept(TOTEM_OF_PETRIFICATION);
                             output.accept(PETRIFICATION_VIAL);
+                            output.accept(ELDRITCH_TENTACLE_BLOCK_ITEM);
                         })
                         .build()
 

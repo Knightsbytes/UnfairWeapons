@@ -2,6 +2,7 @@ package unfairweapons;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -9,9 +10,11 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 
 import static net.minecraft.world.effect.MobEffects.INSTANT_HEALTH;
+import static net.minecraft.world.item.Items.registerBlock;
 import static unfairweapons.UnfairWeapons.MOD_ID;
 import static net.minecraft.world.item.Items.registerItem;
 import static unfairweapons.UnfairWeapons.PETRIFICATION_EFFECT;
@@ -21,13 +24,19 @@ import net.minecraft.world.item.component.DeathProtection;
 import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
 import net.minecraft.world.item.consume_effects.ClearAllStatusEffectsConsumeEffect;
 import net.minecraft.world.item.equipment.*;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
+import net.minecraft.world.level.material.MapColor;
 import unfairweapons.armour.SuperconductorArmourMaterial;
 import unfairweapons.items.ClaymoreItem;
 import unfairweapons.items.GunItem;
 import unfairweapons.items.CutlassItem;
 import unfairweapons.items.PetrificationNeedleItem;
+import unfairweapons.items.block.TentacleBlock;
 
 import java.util.List;
+import java.util.function.Function;
 
 public class ItemsRegister {
     public static void registerItems() {
@@ -66,6 +75,11 @@ public class ItemsRegister {
                     .fireResistant()
                     .stacksTo(1)
     );
+
+
+
+    public static final Block ELDRITCH_TENTACLE_BLOCK = register("eldritch_tentacle_block", TentacleBlock::new, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GREEN).instrument(NoteBlockInstrument.BASEDRUM).requiresCorrectToolForDrops().strength(5.0F, 6.0F));
+    public static final Item ELDRITCH_TENTACLE_BLOCK_ITEM = registerBlock(ELDRITCH_TENTACLE_BLOCK);
 
     public static final Item GUN = registerItem(modItemId("gun"), GunItem::new, new Item.Properties().stacksTo(1));
     public static final Item BULLET = registerItem(modItemId("bullet"), Item::new, new Item.Properties());
@@ -114,4 +128,21 @@ public class ItemsRegister {
             new Item.Properties()
                     .stacksTo(1)
     );
+
+    public static Block register(ResourceKey<Block> resourceKey, Function<BlockBehaviour.Properties, Block> function, BlockBehaviour.Properties properties) {
+        Block block = (Block)function.apply(properties.setId(resourceKey));
+        return Registry.register(BuiltInRegistries.BLOCK, resourceKey, block);
+    }
+
+    private static Block register(String string, Function<BlockBehaviour.Properties, Block> function, BlockBehaviour.Properties properties) {
+        return register(blockId(string), function, properties);
+    }
+
+    private static Block register(String string, BlockBehaviour.Properties properties) {
+        return register(string, Block::new, properties);
+    }
+
+    private static ResourceKey<Block> blockId(String string) {
+        return ResourceKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(MOD_ID, string));
+    }
 }

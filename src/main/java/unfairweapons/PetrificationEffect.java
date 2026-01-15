@@ -38,6 +38,8 @@ public class PetrificationEffect extends MobEffect {
                 entity.addEffect(HealthRegen);
             }
 
+            ((Player) entity).getFoodData().eat(1, 1.0F);
+
             entity.removeEffect(NAUSEA);
             entity.removeEffect(POISON);
             entity.removeEffect(WEAKNESS);
@@ -47,6 +49,7 @@ public class PetrificationEffect extends MobEffect {
             entity.removeEffect(WITHER);
             entity.removeEffect(MINING_FATIGUE);
             entity.removeEffect(OOZING);
+            entity.removeEffect(DARKNESS);
 
             entity.isInPowderSnow = false;
         }

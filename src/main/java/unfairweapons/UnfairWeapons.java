@@ -97,20 +97,22 @@ public class UnfairWeapons implements ModInitializer {
 		});
 
 		PayloadTypeRegistry.playC2S().register(PetrifiedAbility2Packet.TYPE, PetrifiedAbility2Packet.CODEC);
-		ServerPlayNetworking.registerGlobalReceiver(SummonPetrifyingEyePacket.TYPE, (packet, context) -> {
+		ServerPlayNetworking.registerGlobalReceiver(PetrifiedAbility2Packet.TYPE, (packet, context) -> {
 			ServerPlayer player = context.player();
 			ServerLevel level = player.level();
 
 			player.addEffect(new MobEffectInstance(MobEffects.INSTANT_HEALTH, 1, 100, false, false, true));
-			player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 1, 5, false, false, true));
+			player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 6000, 5, false, false, true));
 
 			AABB affectedEntities = new AABB(player.position(), player.position()).inflate(5);
 			for (Player victim : level.getEntitiesOfClass(Player.class, affectedEntities)){
-				victim.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 40, 1, false, false, true));
-				victim.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 40, 1, false, false, true));
-				victim.addEffect(new MobEffectInstance(MobEffects.WITHER, 40, 5, false, false, true));
-				victim.addEffect(new MobEffectInstance(MobEffects.MINING_FATIGUE, 40, 1, false, false, true));
-				victim.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 40, 1, false, false, true));
+				if (victim != player) {
+					victim.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 40, 1, false, false, true));
+					victim.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 40, 1, false, false, true));
+					victim.addEffect(new MobEffectInstance(MobEffects.WITHER, 40, 5, false, false, true));
+					victim.addEffect(new MobEffectInstance(MobEffects.MINING_FATIGUE, 40, 1, false, false, true));
+					victim.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 40, 1, false, false, true));
+				}
 			}
 		});
 

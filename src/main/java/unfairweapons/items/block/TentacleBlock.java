@@ -46,7 +46,12 @@ public class TentacleBlock extends Block implements SimpleWaterloggedBlock{
 
     public TentacleBlock(Properties properties) {
         super(properties);
-        this.registerDefaultState(this.defaultBlockState().setValue(WATERLOGGED, false));
+        this.registerDefaultState(
+                this.stateDefinition.any()
+                        .setValue(WATERLOGGED, false)
+                        .setValue(LEVEL, 0)
+                        .setValue(FACING, Direction.NORTH)
+        );
     }
 
     @Override
@@ -148,11 +153,6 @@ public class TentacleBlock extends Block implements SimpleWaterloggedBlock{
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(WATERLOGGED, FACING);
-        this.registerDefaultState(
-                this.defaultBlockState()
-                        .setValue(WATERLOGGED, false)
-                        .setValue(LEVEL, 0)
-        );
     }
 
     @Override

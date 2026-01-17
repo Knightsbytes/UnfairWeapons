@@ -16,7 +16,7 @@ import static unfairweapons.UnfairWeapons.PETRIFICATION_EFFECT;
 
 public class ImmortalityEffect extends MobEffect {
     protected ImmortalityEffect() {
-        super(MobEffectCategory.HARMFUL, 0x59FF6C);
+        super(MobEffectCategory.BENEFICIAL, 0x59FF6C);
     }
 
     // Called every tick to check if the effect can be applied or not

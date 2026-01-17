@@ -5,6 +5,7 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -35,31 +36,54 @@ public abstract class HeartTypeMixin {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player != null && mc.player.hasEffect(PETRIFICATION_EFFECT)) {
 
-            // Skip if this is CONTAINER - let vanilla handle empty hearts
             String thisType = this.toString();
             if (thisType.equals("CONTAINER")) {
-                return; // Use default container
+                return;
             }
 
-            // Build the custom sprite path for filled hearts
-            String spriteName;
-            if (hardcore) {
-                spriteName = half ? "petrified_hardcore_half" : "petrified_hardcore_full";
-            } else {
-                spriteName = half ? "petrified_half" : "petrified_full";
+            MobEffectInstance effectInstance = mc.player.getEffect(PETRIFICATION_EFFECT);
+            int effectAmplifier = effectInstance.getAmplifier();
+
+            if (effectAmplifier < 2) {
+
+                String spriteName;
+                if (hardcore) {
+                    spriteName = half ? "petrified_hardcore_half" : "petrified_hardcore_full";
+                } else {
+                    spriteName = half ? "petrified_half" : "petrified_full";
+                }
+
+                if (blinking) {
+                    spriteName += "_blinking";
+                }
+
+                Identifier petrificationSprite = Identifier.fromNamespaceAndPath(
+                        MOD_ID,
+                        "hud/heart/" + spriteName
+                );
+                cir.setReturnValue(petrificationSprite);
             }
 
-            if (blinking) {
-                spriteName += "_blinking";
+            else{
+
+                String spriteName;
+                if (hardcore) {
+                    spriteName = half ? "petrified_stage_2_hardcore_half" : "petrified_stage_2_hardcore_full";
+                } else {
+                    spriteName = half ? "petrified_stage_2_half" : "petrified_stage_2_full";
+                }
+
+                if (blinking) {
+                    spriteName += "_blinking";
+                }
+
+                Identifier petrificationSprite = Identifier.fromNamespaceAndPath(
+                        MOD_ID,
+                        "hud/heart/" + spriteName
+                );
+                cir.setReturnValue(petrificationSprite);
             }
 
-            // Return your custom sprite
-            Identifier petrificationSprite = Identifier.fromNamespaceAndPath(
-                    MOD_ID,
-                    "hud/heart/" + spriteName
-            );
-
-            cir.setReturnValue(petrificationSprite);
         }
     }
 }

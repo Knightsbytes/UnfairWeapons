@@ -6,9 +6,10 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.attributes.*;
 import net.minecraft.world.entity.player.Player;
+
+import java.util.List;
 
 import static net.minecraft.world.effect.MobEffects.*;
 import static unfairweapons.UnfairWeapons.MOD_ID;
@@ -52,6 +53,15 @@ public class PetrificationEffect extends MobEffect {
             entity.removeEffect(DARKNESS);
 
             entity.isInPowderSnow = false;
+
+            AttributeMap entityAttributes = entity.getAttributes();
+
+            entityAttributes.resetBaseValue(Attributes.GRAVITY);
+            entityAttributes.resetBaseValue(Attributes.SCALE);
+            entityAttributes.resetBaseValue(Attributes.CAMERA_DISTANCE);
+            entityAttributes.resetBaseValue(Attributes.ATTACK_KNOCKBACK);
+            entityAttributes.resetBaseValue(Attributes.MOVEMENT_EFFICIENCY);
+
         }
 
         return super.applyEffectTick(world, entity, amplifier);

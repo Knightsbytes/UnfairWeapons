@@ -127,8 +127,15 @@ public class EldritchSludge extends FallingBlock {
     public void onLand(Level level, BlockPos blockPos, BlockState fallingState, BlockState hitState, FallingBlockEntity fallingBlockEntity) {
         int fallingLayers = fallingState.getValue(LAYERS);
 
+        // The blockPos is where the entity landed (the space it's trying to occupy)
+        // hitState is the block that was at that position
+
+        // Check if we can replace the block at landing position (grass, snow, air)
+        if (canReplace(hitState)) {
+            level.setBlock(blockPos, fallingState, 3);
+        }
         // Check if landing on same block type (stack layers)
-        if (hitState.is(this)) {
+        else if (hitState.is(this)) {
             int existingLayers = hitState.getValue(LAYERS);
             int totalLayers = Math.min(8, existingLayers + fallingLayers);
             level.setBlock(blockPos, hitState.setValue(LAYERS, totalLayers), 3);
@@ -143,16 +150,15 @@ public class EldritchSludge extends FallingBlock {
                 }
             }
         }
-        // Check if we can replace the block we landed in (grass, snow, etc.)
-        else if (canReplace(hitState)) {
-            level.setBlock(blockPos, fallingState, 3);
-        }
-        // Otherwise place on top if possible
+        // Otherwise it's a solid block, try to place on top
         else {
             BlockPos abovePos = blockPos.above();
             BlockState aboveState = level.getBlockState(abovePos);
             if (aboveState.isAir() || canReplace(aboveState)) {
                 level.setBlock(abovePos, fallingState, 3);
+            } else {
+                // Can't place anywhere, drop as item
+                super.onLand(level, blockPos, fallingState, hitState, fallingBlockEntity);
             }
         }
     }

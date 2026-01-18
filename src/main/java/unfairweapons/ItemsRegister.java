@@ -82,7 +82,7 @@ public class ItemsRegister {
     public static final Block ELDRITCH_TENTACLE_BLOCK = register("eldritch_tentacle_block", TentacleBlock::new, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GREEN).instrument(NoteBlockInstrument.BASEDRUM).requiresCorrectToolForDrops().strength(5.0F, 6.0F));
     public static final Item ELDRITCH_TENTACLE_BLOCK_ITEM = registerBlock(ELDRITCH_TENTACLE_BLOCK);
 
-    public static final Block ELDRITCH_SLUDGE_BLOCK = register("eldritch_sludge", EldritchSludge::new, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GREEN).instrument(NoteBlockInstrument.BASEDRUM).requiresCorrectToolForDrops().strength(5.0F, 6.0F));
+    public static final Block ELDRITCH_SLUDGE_BLOCK = register("eldritch_sludge", EldritchSludge::new, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GREEN).instrument(NoteBlockInstrument.BASEDRUM).requiresCorrectToolForDrops().strength(5.0F, 6.0F).speedFactor(0.00001F));
     public static final Item ELDRITCH_SLUDGE_BLOCK_ITEM = registerBlock(ELDRITCH_SLUDGE_BLOCK);
 
     public static final Item GUN = registerItem(modItemId("gun"), GunItem::new, new Item.Properties().stacksTo(1));

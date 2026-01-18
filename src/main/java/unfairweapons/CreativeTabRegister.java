@@ -38,6 +38,7 @@ public class CreativeTabRegister {
                             output.accept(TOTEM_OF_PETRIFICATION);
                             output.accept(PETRIFICATION_VIAL);
                             output.accept(ELDRITCH_TENTACLE_BLOCK_ITEM);
+                            output.accept(ELDRITCH_SLUDGE_BLOCK_ITEM);
                         })
                         .build()
 

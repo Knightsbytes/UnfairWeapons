@@ -1,7 +1,7 @@
 {   "parent": "block/thin_block",
     "textures": {
-        "particle": "block/snow",
-        "texture": "block/snow"
+        "particle": "unfair-weapons:block/eldritch_sludge",
+        "texture": "unfair-weapons:block/eldritch_sludge"
     },
     "elements": [
         {   "from": [ 0, 0, 0 ],

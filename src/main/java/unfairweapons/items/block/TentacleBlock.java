@@ -23,13 +23,13 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jspecify.annotations.Nullable;
 
+import java.util.List;
 import java.util.Map;
 
 public class TentacleBlock extends Block implements SimpleWaterloggedBlock{
@@ -108,18 +108,19 @@ public class TentacleBlock extends Block implements SimpleWaterloggedBlock{
     }
 
     @Override
-    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        AABB box = new AABB(pos);
+    public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        AABB box = new AABB(pos).inflate(0.1);
+        List<LivingEntity> entities = level.getEntitiesOfClass(LivingEntity.class, box);
 
-        for (Entity entity : level.getEntities(null, box)) {
-            if (!(entity instanceof LivingEntity living)) continue;
-
+        for (LivingEntity entity : entities) {
             Vec3 velocity = entity.getDeltaMovement();
-            double speed = velocity.horizontalDistance();
-            if (speed > 0) continue;
+            double horizontalSpeed = Math.sqrt(velocity.x * velocity.x + velocity.z * velocity.z);
+            float damage = (float) (horizontalSpeed * 10.0);
 
-            float damage = (float) (speed * 6.0F);
-            living.hurt(level.damageSources().magic(), damage);
+            if (damage > 0.5f) {
+                entity.hurt(level.damageSources().generic(), damage);
+                entity.setDeltaMovement(velocity.x * 0.1, velocity.y, velocity.z * 0.1);
+            }
         }
     }
 
@@ -133,16 +134,6 @@ public class TentacleBlock extends Block implements SimpleWaterloggedBlock{
         return Shapes.block();
     }
 
-    @Override
-    protected InteractionResult useWithoutItem(BlockState blockState, Level level, BlockPos blockPos, Player player, BlockHitResult blockHitResult) {
-        if (!level.isClientSide() && player.canUseGameMasterBlocks()) {
-            level.setBlock(blockPos, blockState.cycle(LEVEL), 2);
-            return InteractionResult.SUCCESS_SERVER;
-        } else {
-            return InteractionResult.CONSUME;
-        }
-    }
-
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext blockPlaceContext) {
@@ -152,7 +143,7 @@ public class TentacleBlock extends Block implements SimpleWaterloggedBlock{
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(WATERLOGGED, FACING);
+        builder.add(WATERLOGGED, LEVEL, FACING);
     }
 
     @Override

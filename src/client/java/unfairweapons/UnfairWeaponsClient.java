@@ -23,6 +23,7 @@ import org.lwjgl.glfw.GLFW;
 import unfairweapons.entity.PetrifyingEye;
 import unfairweapons.networking.ApplyPetrification3Packet;
 import unfairweapons.networking.PetrifiedAbility2Packet;
+import unfairweapons.networking.SpawnPetrifiedSludgePacket;
 import unfairweapons.networking.SummonPetrifyingEyePacket;
 
 import java.util.HashMap;
@@ -56,6 +57,8 @@ public class UnfairWeaponsClient implements ClientModInitializer {
     private static long PetrificationCooldown1;
     private static long PetrificationCooldown2;
     private static long PetrificationCooldown3;
+
+    private static long PetrificationAbility3Duration;
 
 	@Override
 	public void onInitializeClient() {
@@ -175,6 +178,9 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                         // Set cooldown
                         cooldowns.put(cooldownKey, currentTick + ABILITY_3_COOLDOWN);
 
+                        cooldowns.put(playerId + "_ability3_duration", currentTick + 200);
+
+
                     } else {
                         client.player.displayClientMessage(Component.literal("You don't have the needed effect to use this!"), false);
                     }
@@ -184,9 +190,15 @@ public class UnfairWeaponsClient implements ClientModInitializer {
             while (PetrificationAbility4.consumeClick()) {
                 MobEffectInstance effectInstance = client.player.getEffect(PETRIFICATION_EFFECT);
 
-                if (effectInstance.getAmplifier() == 1){
-                    ClientPlayNetworking.send(new ApplyPetrification3Packet());
+                if (effectInstance != null) {
+                    if (effectInstance.getAmplifier() == 1) {
+                        ClientPlayNetworking.send(new ApplyPetrification3Packet());
+                    }
                 }
+            }
+            String durationKey = playerId + "_ability3_duration";
+            if (cooldowns.getOrDefault(durationKey, 0L) > currentTick) {
+                ClientPlayNetworking.send(new SpawnPetrifiedSludgePacket(client.player.getOnPos()));
             }
         });
 

@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import unfairweapons.entity.PetrifyingEye;
 import unfairweapons.networking.ApplyPetrification3Packet;
 import unfairweapons.networking.PetrifiedAbility2Packet;
+import unfairweapons.networking.SpawnPetrifiedSludgePacket;
 import unfairweapons.networking.SummonPetrifyingEyePacket;
 
 import java.util.List;
@@ -96,6 +97,13 @@ public class UnfairWeapons implements ModInitializer {
 			PetrifyingEye eye = new PetrifyingEye(PETRIFYING_EYE_ENTITY, level);
 			eye.setPos(player.position().x, player.position().y, player.position().z);
 			level.addFreshEntity(eye);
+		});
+
+		PayloadTypeRegistry.playC2S().register(SpawnPetrifiedSludgePacket.TYPE, SpawnPetrifiedSludgePacket.STREAM_CODEC);
+
+
+        ServerPlayNetworking.registerGlobalReceiver(SpawnPetrifiedSludgePacket.TYPE, (packet, context) -> {
+			packet.handle(context.player());
 		});
 
 		PayloadTypeRegistry.playC2S().register(PetrifiedAbility2Packet.TYPE, PetrifiedAbility2Packet.CODEC);

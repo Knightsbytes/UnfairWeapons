@@ -43,14 +43,9 @@ public record SpawnPetrifiedSludgePacket(BlockPos center) implements CustomPacke
                 // Get your sludge block - adjust this to match your registration
                 Block sludgeBlock = ELDRITCH_SLUDGE_BLOCK; // or however you register it
 
-                // If already sludge, add a layer
+                // If already sludge skip
                 if (currentState.getBlock() instanceof EldritchSludge) {
-                    int currentLayers = currentState.getValue(EldritchSludge.LAYERS);
-                    if (currentLayers < 8) {
-                        level.setBlock(targetPos,
-                                currentState.setValue(EldritchSludge.LAYERS, currentLayers + 1),
-                                3);
-                    }
+                    continue;
                 }
                 // If air or replaceable, place new sludge
                 else if (currentState.isAir() || canReplace(currentState)) {

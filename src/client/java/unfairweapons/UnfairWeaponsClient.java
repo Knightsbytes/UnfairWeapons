@@ -178,8 +178,13 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                         // Set cooldown
                         cooldowns.put(cooldownKey, currentTick + ABILITY_3_COOLDOWN);
 
-                        cooldowns.put(playerId + "_ability3_duration", currentTick + 200);
+                        if (cooldowns.getOrDefault(playerId + "_ability3_triggered", 0L) == 0) {
+                            cooldowns.put(playerId + "_ability3_triggered", 1L);
+                        }
 
+                        else {
+                            cooldowns.put(playerId + "_ability3_triggered", 0L);
+                        }
 
                     } else {
                         client.player.displayClientMessage(Component.literal("You don't have the needed effect to use this!"), false);
@@ -196,8 +201,8 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                     }
                 }
             }
-            String durationKey = playerId + "_ability3_duration";
-            if (cooldowns.getOrDefault(durationKey, 0L) > currentTick) {
+            String durationKey = playerId + "_ability3_triggered";
+            if (cooldowns.getOrDefault(durationKey, 0L) == 1) {
                 ClientPlayNetworking.send(new SpawnPetrifiedSludgePacket(client.player.getOnPos()));
             }
         });

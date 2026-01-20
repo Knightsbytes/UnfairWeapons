@@ -3,10 +3,18 @@ package unfairweapons.items.block;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeMap;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.FallingBlockEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -24,6 +32,12 @@ import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jspecify.annotations.Nullable;
+
+import java.util.UUID;
+
+import static net.minecraft.world.effect.MobEffects.SLOWNESS;
+import static unfairweapons.UnfairWeapons.MOD_ID;
+import static unfairweapons.UnfairWeapons.PETRIFICATION_EFFECT;
 
 public class EldritchSludge extends FallingBlock {
     public static final MapCodec<EldritchSludge> CODEC = simpleCodec(EldritchSludge::new);
@@ -210,5 +224,28 @@ public class EldritchSludge extends FallingBlock {
     // Override to get delay before falling
     protected int getDelayAfterPlace() {
         return 2;
+    }
+
+    @Override
+    public void stepOn(Level level, BlockPos blockPos, BlockState blockState, Entity entity) {
+        if (!level.isClientSide() && entity instanceof Player player) {
+
+            if (!player.hasEffect(PETRIFICATION_EFFECT)){
+                AttributeInstance instance =
+                        player.getAttribute(Attributes.MAX_HEALTH);
+
+
+                UUID modifierUuid = UUID.fromString("SLUDGE-SPEED-FACTOR-149816319836719361094610640165402137641084");
+                AttributeModifier modifier = new AttributeModifier(
+                        Identifier.fromNamespaceAndPath(MOD_ID, "sludge_speed_modifier"),
+                        5.0, // The value to add
+                        AttributeModifier.Operation.ADD_VALUE // or MULTIPLY_BASE, MULTIPLY_TOTAL
+                );
+
+                instance.addPermanentModifier(modifier);
+            }
+        }
+
+        super.stepOn(level, blockPos, blockState, entity);
     }
 }

@@ -232,14 +232,14 @@ public class EldritchSludge extends FallingBlock {
 
             if (!player.hasEffect(PETRIFICATION_EFFECT)){
                 AttributeInstance instance =
-                        player.getAttribute(Attributes.MAX_HEALTH);
+                        player.getAttribute(Attributes.MOVEMENT_SPEED);
 
 
                 UUID modifierUuid = UUID.fromString("SLUDGE-SPEED-FACTOR-149816319836719361094610640165402137641084");
                 AttributeModifier modifier = new AttributeModifier(
                         Identifier.fromNamespaceAndPath(MOD_ID, "sludge_speed_modifier"),
-                        5.0, // The value to add
-                        AttributeModifier.Operation.ADD_VALUE // or MULTIPLY_BASE, MULTIPLY_TOTAL
+                        -5.0,
+                        AttributeModifier.Operation.ADD_VALUE
                 );
 
                 instance.addPermanentModifier(modifier);

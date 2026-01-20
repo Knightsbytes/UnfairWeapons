@@ -47,6 +47,8 @@ public class EldritchSludge extends FallingBlock {
     private static final VoxelShape[] SHAPES = Block.boxes(8, i -> Block.column(16.0, 0.0, i * 2));
     public static final int HEIGHT_IMPASSABLE = 5;
     private static final UUID MODIFIER_UUID = UUID.fromString("12345678-1234-1234-1234-123456789abc");
+    protected final float speedFactor = 0.000001F;
+
 
     public EldritchSludge(Properties properties){
         super(properties);
@@ -228,19 +230,19 @@ public class EldritchSludge extends FallingBlock {
         return 2;
     }
 
-    @Override
-    public void stepOn(Level level, BlockPos blockPos, BlockState blockState, Entity entity) {
-        if (!level.isClientSide() && entity instanceof Player player) {
-            if (!player.hasEffect(PETRIFICATION_EFFECT)) {
-                player.addEffect(new MobEffectInstance(
-                        SLOWNESS,
-                        1,
-                        1
-                ));
-            }
+    //@Override
+    //public void stepOn(Level level, BlockPos blockPos, BlockState blockState, Entity entity) {
+    //    if (!level.isClientSide() && entity instanceof Player player) {
+    //        if (!player.hasEffect(PETRIFICATION_EFFECT)) {
+    //            player.addEffect(new MobEffectInstance(
+    //                    SLOWNESS,
+    //                    1,
+    //                    1
+    //            ));
+    //        }
 
-        }
+    //    }
 
-        super.stepOn(level, blockPos, blockState, entity);
-    }
+    //    super.stepOn(level, blockPos, blockState, entity);
+    //}
 }

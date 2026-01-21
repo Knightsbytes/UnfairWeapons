@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:block/cube_all",
-  "textures": {
-    "all": "unfair-weapons:block/eldritch_sludge"
-  }
-}

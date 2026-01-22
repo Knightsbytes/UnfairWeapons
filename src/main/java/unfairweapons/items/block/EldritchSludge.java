@@ -167,7 +167,7 @@ public class EldritchSludge extends FallingBlock {
         }
         // Otherwise it's a solid block, try to place on top
         else {
-            BlockPos abovePos = blockPos.above();
+            BlockPos abovePos = blockPos.below();
             BlockState aboveState = level.getBlockState(abovePos);
             if (aboveState.isAir() || canReplace(aboveState)) {
                 level.setBlock(abovePos, fallingState, 3);

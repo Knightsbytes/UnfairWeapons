@@ -137,48 +137,34 @@ public class EldritchSludge extends FallingBlock {
     }
 
     @Override
-    public void onBrokenAfterFall(Level level, BlockPos blockPos, FallingBlockEntity fallingBlockEntity) {
-        // Prevent default breaking behavior - we handle placement in onLand
-    }
-
-    @Override
     protected void falling(FallingBlockEntity fallingBlockEntity) {
-        System.out.println("Falling entity created with " + fallingBlockEntity.getBlockState().getValue(LAYERS) + " layers");
+        fallingBlockEntity.setHurtsEntities(0.0f, 0);
+        fallingBlockEntity.dropItem = false;
         super.falling(fallingBlockEntity);
     }
 
     @Override
-    public int getDustColor(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos) {
-        // Return the color for falling dust particles (brown/sludge color)
-        return 0x8B4513; // Saddle brown color for eldritch sludge
-    }
-
-    @Override
-    public void onLand(Level level, BlockPos blockPos, BlockState fallingState, BlockState hitState, FallingBlockEntity fallingBlockEntity) {
+    public void onBrokenAfterFall(Level level, BlockPos blockPos, FallingBlockEntity fallingBlockEntity) {
+        // This is called when the falling entity lands!
+        BlockState fallingState = fallingBlockEntity.getBlockState();
         int fallingLayers = fallingState.getValue(LAYERS);
 
-        System.out.println("=== SLUDGE LANDING DEBUG ===");
-        System.out.println("Landing at: " + blockPos);
-        System.out.println("Falling layers: " + fallingLayers);
-        System.out.println("Hit block: " + hitState.getBlock());
-        System.out.println("Is sludge: " + hitState.is(this));
+
+        BlockState hitState = level.getBlockState(blockPos);
 
         // Check if we can replace the block at landing position (grass, snow, air)
         if (canReplace(hitState)) {
-            System.out.println("Replacing block with sludge");
             level.setBlock(blockPos, fallingState, 3);
         }
         // Check if landing on same block type (stack layers)
         else if (hitState.getBlock() instanceof EldritchSludge) {
             int existingLayers = hitState.getValue(LAYERS);
             int totalLayers = Math.min(8, existingLayers + fallingLayers);
-            System.out.println("Stacking! Existing: " + existingLayers + " + Falling: " + fallingLayers + " = " + totalLayers);
             level.setBlock(blockPos, hitState.setValue(LAYERS, totalLayers), 3);
 
             // If there are leftover layers, place them above
             int remainingLayers = (existingLayers + fallingLayers) - totalLayers;
             if (remainingLayers > 0) {
-                System.out.println("Overflow! Placing " + remainingLayers + " layers above");
                 BlockPos abovePos = blockPos.above();
                 BlockState aboveState = level.getBlockState(abovePos);
                 if (aboveState.isAir() || canReplace(aboveState)) {
@@ -188,18 +174,23 @@ public class EldritchSludge extends FallingBlock {
         }
         // Otherwise it's a solid block, try to place on top
         else {
-            System.out.println("Solid block, placing on top");
             BlockPos abovePos = blockPos.above();
             BlockState aboveState = level.getBlockState(abovePos);
             if (aboveState.isAir() || canReplace(aboveState)) {
                 level.setBlock(abovePos, fallingState, 3);
             } else {
-                System.out.println("Can't place anywhere, dropping as item");
-                // Can't place anywhere, drop as item
-                super.onLand(level, blockPos, fallingState, hitState, fallingBlockEntity);
+                // Can't place anywhere, use default behavior
+                super.onBrokenAfterFall(level, blockPos, fallingBlockEntity);
             }
         }
-        System.out.println("===========================");
+    }
+
+
+
+    @Override
+    public int getDustColor(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos) {
+        // Return the color for falling dust particles (brown/sludge color)
+        return 0x8B4513; // Saddle brown color for eldritch sludge
     }
 
     // Helper method to check if a block can be replaced by falling sludge

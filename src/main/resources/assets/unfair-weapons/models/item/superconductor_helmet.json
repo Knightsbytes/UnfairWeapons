@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "unfair-weapons:item/superconductor_helmet"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "item.unfair-weapons.claymore": "Claymore",
+  "item.unfair-weapons.explosive_sword": "Explosive sword",
+  "item.unfair-weapons.gun": "Gun!",
+  "item.unfair-weapons.cutlass": "Energy cutlass",
+  "item.unfair-weapons.totem_of_petrification": "Totem of petrification",
+  "item.unfair-weapons.petrified_vial": "Petrified vial",
+
+  "block.unfair-weapons.eldritch_tentacle_block": "Eldritch tentacle",
+  "block.unfair-weapons.eldritch_sludge": "Eldritch sludge",
+
+  "item.unfair-weapons.superconductor_helmet": "Superconductor helmet",
+  "item.unfair-weapons.superconductor_chestplate": "Superconductor chestplate",
+  "item.unfair-weapons.superconductor_leggings": "Superconductor leggings",
+  "item.unfair-weapons.superconductor_boots": "Superconductor boots",
+
+  "effect.unfair-weapons.example": "Example",
+  "effect.unfair-weapons.petrification": "Petrified",
+  "effect.unfair-weapons.immortality": "Immortality",
+
+  "itemGroup.unfairitems.unfair_items": "Unfair items",
+
+  "key.category.unfair-weapons.eldritch_abilities": "Eldritch abilities",
+  "key.actions.unfair_weapons.eldritch_ability_0": "Ability 1",
+  "key.actions.unfair_weapons.eldritch_ability_1": "Ability 2",
+  "key.actions.unfair_weapons.eldritch_ability_2": "Ability 3"
+}

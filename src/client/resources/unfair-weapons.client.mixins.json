@@ -1,0 +1,12 @@
+{
+	"required": true,
+	"package": "unfairweapons.mixin.client",
+	"compatibilityLevel": "JAVA_21",
+	"client": [
+		"HeartTypeMixin",
+		"EldritchSkinMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

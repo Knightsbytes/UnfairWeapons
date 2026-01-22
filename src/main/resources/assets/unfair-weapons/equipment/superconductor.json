@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "unfair-weapons:superconductor"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "unfair-weapons:superconductor"
+      }
+    ]
+  }
+}

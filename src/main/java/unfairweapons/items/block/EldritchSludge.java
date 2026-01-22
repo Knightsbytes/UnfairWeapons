@@ -160,11 +160,13 @@ public class EldritchSludge extends FallingBlock {
         else if (hitState.getBlock() instanceof EldritchSludge) {
             int existingLayers = hitState.getValue(LAYERS);
             int totalLayers = Math.min(8, existingLayers + fallingLayers);
+            System.out.println("Stacking! Existing: " + existingLayers + " + Falling: " + fallingLayers + " = " + totalLayers);
             level.setBlock(blockPos, hitState.setValue(LAYERS, totalLayers), 3);
 
             // If there are leftover layers, place them above
             int remainingLayers = (existingLayers + fallingLayers) - totalLayers;
             if (remainingLayers > 0) {
+                System.out.println("Overflow! Placing " + remainingLayers + " layers above");
                 BlockPos abovePos = blockPos.above();
                 BlockState aboveState = level.getBlockState(abovePos);
                 if (aboveState.isAir() || canReplace(aboveState)) {
@@ -174,15 +176,18 @@ public class EldritchSludge extends FallingBlock {
         }
         // Otherwise it's a solid block, try to place on top
         else {
+            System.out.println("Solid block, placing on top");
             BlockPos abovePos = blockPos.above();
             BlockState aboveState = level.getBlockState(abovePos);
             if (aboveState.isAir() || canReplace(aboveState)) {
                 level.setBlock(abovePos, fallingState, 3);
             } else {
+                System.out.println("Can't place anywhere, calling super");
                 // Can't place anywhere, use default behavior
                 super.onBrokenAfterFall(level, blockPos, fallingBlockEntity);
             }
         }
+        System.out.println("===========================");
     }
 
 

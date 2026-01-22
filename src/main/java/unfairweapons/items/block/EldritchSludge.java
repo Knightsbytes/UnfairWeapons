@@ -41,10 +41,7 @@ public class EldritchSludge extends FallingBlock {
     public static final int MAX_HEIGHT = 8;
     public static final IntegerProperty LAYERS = BlockStateProperties.LAYERS;
     private static final VoxelShape[] SHAPES = Block.boxes(8, i -> Block.column(16.0, 0.0, i * 2));
-    public static final int HEIGHT_IMPASSABLE = 1;
-    private static final UUID MODIFIER_UUID = UUID.fromString("12345678-1234-1234-1234-123456789abc");
-    //protected final float speedFactor = 0.000001F;
-
+    public static final int HEIGHT_IMPASSABLE = 5;
 
     public EldritchSludge(Properties properties){
         super(properties);
@@ -101,7 +98,6 @@ public class EldritchSludge extends FallingBlock {
     }
 
     @Override
-    @NotNull
     protected BlockState updateShape(
             BlockState blockState,
             LevelReader levelReader,
@@ -123,13 +119,32 @@ public class EldritchSludge extends FallingBlock {
     @Override
     protected void tick(BlockState blockState, ServerLevel serverLevel, BlockPos blockPos, RandomSource randomSource) {
         // Check if block should fall
-        if (!FallingBlock.isFree(serverLevel.getBlockState(blockPos.below())) || blockPos.getY() < serverLevel.getMinY()) {
+        BlockPos belowPos = blockPos.below();
+        BlockState belowState = serverLevel.getBlockState(belowPos);
+
+        if (blockPos.getY() < serverLevel.getMinY()) {
+            return;
+        }
+
+        // Check if the space below is free or replaceable
+        if (!FallingBlock.isFree(belowState)) {
             return;
         }
 
         // Create falling block entity with the layer count
         FallingBlockEntity fallingBlockEntity = FallingBlockEntity.fall(serverLevel, blockPos, blockState);
         this.falling(fallingBlockEntity);
+    }
+
+    @Override
+    public void onBrokenAfterFall(Level level, BlockPos blockPos, FallingBlockEntity fallingBlockEntity) {
+        // Prevent default breaking behavior - we handle placement in onLand
+    }
+
+    @Override
+    protected void falling(FallingBlockEntity fallingBlockEntity) {
+        System.out.println("Falling entity created with " + fallingBlockEntity.getBlockState().getValue(LAYERS) + " layers");
+        super.falling(fallingBlockEntity);
     }
 
     @Override
@@ -142,22 +157,28 @@ public class EldritchSludge extends FallingBlock {
     public void onLand(Level level, BlockPos blockPos, BlockState fallingState, BlockState hitState, FallingBlockEntity fallingBlockEntity) {
         int fallingLayers = fallingState.getValue(LAYERS);
 
-        // The blockPos is where the entity landed (the space it's trying to occupy)
-        // hitState is the block that was at that position
+        System.out.println("=== SLUDGE LANDING DEBUG ===");
+        System.out.println("Landing at: " + blockPos);
+        System.out.println("Falling layers: " + fallingLayers);
+        System.out.println("Hit block: " + hitState.getBlock());
+        System.out.println("Is sludge: " + hitState.is(this));
 
         // Check if we can replace the block at landing position (grass, snow, air)
         if (canReplace(hitState)) {
+            System.out.println("Replacing block with sludge");
             level.setBlock(blockPos, fallingState, 3);
         }
         // Check if landing on same block type (stack layers)
-        else if (hitState.is(this)) {
+        else if (hitState.getBlock() instanceof EldritchSludge) {
             int existingLayers = hitState.getValue(LAYERS);
             int totalLayers = Math.min(8, existingLayers + fallingLayers);
+            System.out.println("Stacking! Existing: " + existingLayers + " + Falling: " + fallingLayers + " = " + totalLayers);
             level.setBlock(blockPos, hitState.setValue(LAYERS, totalLayers), 3);
 
             // If there are leftover layers, place them above
             int remainingLayers = (existingLayers + fallingLayers) - totalLayers;
             if (remainingLayers > 0) {
+                System.out.println("Overflow! Placing " + remainingLayers + " layers above");
                 BlockPos abovePos = blockPos.above();
                 BlockState aboveState = level.getBlockState(abovePos);
                 if (aboveState.isAir() || canReplace(aboveState)) {
@@ -167,32 +188,28 @@ public class EldritchSludge extends FallingBlock {
         }
         // Otherwise it's a solid block, try to place on top
         else {
-            BlockPos abovePos = blockPos.below();
+            System.out.println("Solid block, placing on top");
+            BlockPos abovePos = blockPos.above();
             BlockState aboveState = level.getBlockState(abovePos);
             if (aboveState.isAir() || canReplace(aboveState)) {
                 level.setBlock(abovePos, fallingState, 3);
             } else {
+                System.out.println("Can't place anywhere, dropping as item");
                 // Can't place anywhere, drop as item
                 super.onLand(level, blockPos, fallingState, hitState, fallingBlockEntity);
             }
         }
+        System.out.println("===========================");
     }
 
     // Helper method to check if a block can be replaced by falling sludge
     private boolean canReplace(BlockState state) {
         return state.isAir()
+                || state.is(Blocks.GRASS_BLOCK)
                 || state.is(Blocks.TALL_GRASS)
                 || state.is(Blocks.SHORT_GRASS)
                 || state.is(Blocks.SNOW)
                 || state.is(BlockTags.REPLACEABLE);
-    }
-
-    @Override
-    protected void randomTick(BlockState blockState, ServerLevel serverLevel, BlockPos blockPos, RandomSource randomSource) {
-        if (serverLevel.getBrightness(LightLayer.BLOCK, blockPos) > 11) {
-            dropResources(blockState, serverLevel, blockPos);
-            serverLevel.removeBlock(blockPos, false);
-        }
     }
 
     @Override

@@ -2,9 +2,11 @@ package unfairweapons;
 
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.*;
 import net.minecraft.world.entity.player.Player;
@@ -29,7 +31,7 @@ public class PetrificationEffect extends MobEffect {
     // Called when the effect is applied.
     @Override
     public boolean applyEffectTick(ServerLevel world, LivingEntity entity, int amplifier) {
-        if (entity instanceof Player) {
+        if (entity instanceof Player player) {
             if (entity.isOnFire()){
                 entity.clearFire();
             }
@@ -39,7 +41,7 @@ public class PetrificationEffect extends MobEffect {
                 entity.addEffect(HealthRegen);
             }
 
-            ((Player) entity).getFoodData().eat(1, 1.0F);
+            player.getFoodData().eat(1, 1.0F);
 
             entity.removeEffect(NAUSEA);
             entity.removeEffect(POISON);
@@ -62,8 +64,10 @@ public class PetrificationEffect extends MobEffect {
             entityAttributes.resetBaseValue(Attributes.ATTACK_KNOCKBACK);
             entityAttributes.resetBaseValue(Attributes.MOVEMENT_EFFICIENCY);
 
+
         }
 
         return super.applyEffectTick(world, entity, amplifier);
     }
+
 }

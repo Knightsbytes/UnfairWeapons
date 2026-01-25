@@ -52,6 +52,7 @@ public class UnfairWeapons implements ModInitializer {
 					.addAttributeModifier(Attributes.ENTITY_INTERACTION_RANGE, Identifier.fromNamespaceAndPath(MOD_ID, "effect.petrification.entity_interaction_range"), 1F, AttributeModifier.Operation.ADD_VALUE)
 					.addAttributeModifier(Attributes.BLOCK_INTERACTION_RANGE, Identifier.fromNamespaceAndPath(MOD_ID, "effect.petrification.block_interaction_range"), 1F, AttributeModifier.Operation.ADD_VALUE)
 					.addAttributeModifier(Attributes.ATTACK_SPEED, Identifier.fromNamespaceAndPath(MOD_ID,"effect.petrification.haste"), 0.1F, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
+					.addAttributeModifier(Attributes.KNOCKBACK_RESISTANCE, Identifier.fromNamespaceAndPath(MOD_ID,"effect.petrification.knockback_resistance"), 1000000F, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
 			);
 
 	public static final Holder<MobEffect> IMMORTALITY_EFFECT =

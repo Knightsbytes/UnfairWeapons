@@ -69,7 +69,7 @@ public class UnfairWeaponsClient implements ClientModInitializer {
         );
 
         final HashMap<String, Long> cooldowns = new HashMap<>();
-        final int ABILITY_1_COOLDOWN = 1200;
+        final int ABILITY_1_COOLDOWN = 200;
         final int ABILITY_2_COOLDOWN = 200;
         final int ABILITY_3_COOLDOWN = 300;
 

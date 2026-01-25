@@ -7,23 +7,25 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 import static unfairweapons.UnfairWeapons.PETRIFICATION_EFFECT;
 
 @Mixin(Entity.class)
 public abstract class LivingEntityMixin {
 
-    @ModifyVariable(
+    @ModifyArg(
             method = "hurtServer",
-            at = @At("HEAD"),
-            argsOnly = true,
-            ordinal = 1
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/entity/Entity;actuallyHurt(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/damagesource/DamageSource;F)V"
+            ),
+            index = 2
     )
-    private float modifyDamageAmount(float amount, ServerLevel level, DamageSource source) {
+    private float modifyDamageAmount(float amount) {
         Entity entity = (Entity) (Object) this;
 
-        if (entity instanceof net.minecraft.world.entity.LivingEntity livingEntity) {
+        if (entity instanceof LivingEntity livingEntity) {
             if (livingEntity.hasEffect(PETRIFICATION_EFFECT)) {
                 MobEffectInstance effectInstance = livingEntity.getEffect(PETRIFICATION_EFFECT);
                 int amplifier = effectInstance.getAmplifier();

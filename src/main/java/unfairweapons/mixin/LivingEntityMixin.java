@@ -18,14 +18,15 @@ public abstract class LivingEntityMixin {
     private void modifyDamageWithEffect(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         LivingEntity entity = (LivingEntity) (Object) this;
 
-        // Check if entity has your custom effect
         if (entity.hasEffect(PETRIFICATION_EFFECT)) {
             MobEffectInstance effectInstance = entity.getEffect(PETRIFICATION_EFFECT);
             int amplifier = effectInstance.getAmplifier();
 
-            float modifiedAmount = amount * (1.0f - (0.2f * (amplifier + 1))); // 20% reduction per level
+            float modifiedAmount = amount * (1.0f - (0.2f * (amplifier + 1)));
 
-
+            if (amount > 5){
+                amount = 5;
+            }
         }
     }
 }

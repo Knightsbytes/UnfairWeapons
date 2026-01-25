@@ -7,6 +7,7 @@ import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import static unfairweapons.UnfairWeapons.PETRIFICATION_EFFECT;
@@ -14,7 +15,12 @@ import static unfairweapons.UnfairWeapons.PETRIFICATION_EFFECT;
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin {
 
-    @Inject(method = "damage", at = @At("HEAD"), cancellable = true)
+    @ModifyVariable(
+            method = "hurtServer",
+            at = @At("HEAD"),
+            argsOnly = true,
+            ordinal = 1
+    )
     private void modifyDamageWithEffect(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         LivingEntity entity = (LivingEntity) (Object) this;
 

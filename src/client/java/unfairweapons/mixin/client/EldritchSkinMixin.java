@@ -24,15 +24,10 @@ public abstract class EldritchSkinMixin {
             cancellable = true
     )
     private void unfairweapons$overrideSkin(CallbackInfoReturnable<PlayerSkin> cir) {
-        AbstractClientPlayer self = (AbstractClientPlayer) (Object) this;
-        Minecraft mc = Minecraft.getInstance();
+        AbstractClientPlayer player = (AbstractClientPlayer) (Object) this;
 
-
-        if (mc.level == null) {
-            return;
-        }
-
-        var effect = self.getEffect(PETRIFICATION_EFFECT);
+        // Check the effect on THIS player (not just local player)
+        var effect = player.getEffect(PETRIFICATION_EFFECT);
 
         if (effect == null || effect.getAmplifier() <= 1) {
             return;
@@ -43,13 +38,10 @@ public abstract class EldritchSkinMixin {
             return;
         }
 
-
         Identifier eldritchTexture = Identifier.fromNamespaceAndPath(
                 MOD_ID,
                 "entity/player/eldritch"
         );
-
-        //System.out.println("Trying to load texture: " + eldritchTexture);
 
         ClientAsset.ResourceTexture texture = new ClientAsset.ResourceTexture(eldritchTexture);
 

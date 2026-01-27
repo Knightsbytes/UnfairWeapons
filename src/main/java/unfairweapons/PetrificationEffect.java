@@ -43,6 +43,10 @@ public class PetrificationEffect extends MobEffect {
 
             player.getFoodData().eat(1, 1.0F);
 
+            if (!player.onGround()){
+                player.fallDistance = 999;
+            }
+
             entity.removeEffect(NAUSEA);
             entity.removeEffect(POISON);
             entity.removeEffect(WEAKNESS);

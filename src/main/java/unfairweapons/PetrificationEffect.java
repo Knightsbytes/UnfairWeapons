@@ -58,7 +58,7 @@ public class PetrificationEffect extends MobEffect {
             entity.removeEffect(OOZING);
             entity.removeEffect(DARKNESS);
 
-            //entity.isInPowderSnow = false;
+            entity.isInPowderSnow = false;
 
             AttributeMap entityAttributes = entity.getAttributes();
 

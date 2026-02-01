@@ -36,37 +36,37 @@ public class DeathLaser extends Entity {
     @Override
     public void tick() {
         super.tick();
+
         this.setDeltaMovement(0, this.getDeltaMovement().y, 0);
 
-        Level level = level();
-
-        for (int i = level.getMinY(); i <= level.getMaxY(); i += 5) {
-            //level.addParticle(ParticleTypes.EXPLOSION_EMITTER,
-            //        this.getX(),
-            //        i,
-            //        this.getZ(),
-            //        1D,
-            //        1D,
-            //        1D
-            //);
-            for (int x = 0; x < 50; x++) {
-
-                double angle = (2 * Math.PI * x) / 50;
-                int xOffset = (int) (Math.cos(angle) * 10);
-                int zOffset = (int) (Math.sin(angle) * 10);
-
-                BlockPos base = this.getOnPos();
-
-                BlockPos pos = new BlockPos(
-                        base.getX() + xOffset,
+        if (!this.level().isClientSide() && this.level() instanceof ServerLevel level) {
+            for (int i = level.getMinY(); i <= level.getMaxY(); i += 5) {
+                level.addParticle(ParticleTypes.EXPLOSION_EMITTER,
+                        this.getX(),
                         i,
-                        base.getZ() + zOffset
+                        this.getZ(),
+                        1D,
+                        1D,
+                        1D
                 );
 
-                level.setBlock(pos, Blocks.AIR.defaultBlockState(), 1);
+                for (int x = 0; x < 50; x++) {
+
+                    double angle = (2 * Math.PI * x) / 50;
+                    int xOffset = (int) (Math.cos(angle) * 10);
+                    int zOffset = (int) (Math.sin(angle) * 10);
+
+                    BlockPos base = this.getOnPos();
+
+                    BlockPos pos = new BlockPos(
+                            base.getX() + xOffset,
+                            i,
+                            base.getZ() + zOffset
+                    );
+                    level.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
+                }
             }
         }
-
 
     }
 

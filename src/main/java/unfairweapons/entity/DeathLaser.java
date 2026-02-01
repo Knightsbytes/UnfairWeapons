@@ -33,41 +33,48 @@ public class DeathLaser extends Entity {
     @Override
     public boolean hurtServer(ServerLevel level, DamageSource source, float amount) { return false;}
 
+    boolean hasRun = false;
+
     @Override
     public void tick() {
         super.tick();
 
+        // Stop movement
         this.setDeltaMovement(0, this.getDeltaMovement().y, 0);
 
-        if (!this.level().isClientSide() && this.level() instanceof ServerLevel level) {
-            for (int i = level.getMinY(); i <= level.getMaxY(); i += 5) {
-                level.addParticle(ParticleTypes.EXPLOSION_EMITTER,
-                        this.getX(),
-                        i,
-                        this.getZ(),
-                        1D,
-                        1D,
-                        1D
-                );
+        // Run only once
+        if (!this.level().isClientSide() && !hasRun) {
+            hasRun = true;
 
-                for (int x = 0; x < 50; x++) {
+            ServerLevel level = (ServerLevel) this.level();
+            BlockPos base = this.blockPosition();
 
-                    double angle = (2 * Math.PI * x) / 50;
+            int minY = level.getMinY();
+            int maxY = level.getMaxY() - 1;
+
+            for (int y = minY; y <= maxY; y += 5) {
+                // Blocks
+                for (int step = 0; step < 50; step++) {
+                    double angle = (2 * Math.PI * step) / 50;
                     int xOffset = (int) (Math.cos(angle) * 10);
                     int zOffset = (int) (Math.sin(angle) * 10);
 
-                    BlockPos base = this.getOnPos();
-
-                    BlockPos pos = new BlockPos(
-                            base.getX() + xOffset,
-                            i,
-                            base.getZ() + zOffset
-                    );
+                    BlockPos pos = base.offset(xOffset, y - base.getY(), zOffset);
                     level.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
                 }
+
+                // Particles (send to all players in radius)
+                level.sendParticles(
+                        ParticleTypes.EXPLOSION_EMITTER,
+                        this.getX(),
+                        y,
+                        this.getZ(),
+                        5, // count
+                        1, 1, 1, // offset
+                        0.1 // speed
+                );
             }
         }
-
     }
 
     @Override

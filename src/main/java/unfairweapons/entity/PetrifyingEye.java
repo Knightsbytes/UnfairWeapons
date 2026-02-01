@@ -18,6 +18,7 @@ import net.minecraft.world.phys.AABB;
 
 import java.util.*;
 
+import static unfairweapons.UnfairWeapons.DEATH_LASER;
 import static unfairweapons.UnfairWeapons.PETRIFICATION_EFFECT;
 
 public class PetrifyingEye extends Entity {
@@ -76,6 +77,10 @@ public class PetrifyingEye extends Entity {
                 decrementAndMaybeReset(player, uuid);
             }
         }
+        this.level().addFreshEntity(new DeathLaser(
+                DEATH_LASER,
+                this.level()
+        ));
     }
 
     private AABB getEffectAABB() {

@@ -3,18 +3,22 @@ package unfairweapons.entity;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.monster.zombie.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.*;
 
@@ -63,6 +67,24 @@ public class PetrifyingEye extends Entity {
 
         lifespan++;
         if (lifespan >= MAX_LIFESPAN) {
+            Vec3 spawnPos = this.position();
+
+            if (!this.level().isClientSide() && this.level() instanceof ServerLevel serverLevel) {
+                DeathLaser deathLaser = new DeathLaser(DEATH_LASER, serverLevel);
+                deathLaser.setPos(this.position());
+                serverLevel.addFreshEntity(deathLaser);
+
+                serverLevel.explode(
+                        deathLaser,
+                        this.position().x,
+                        this.position().y,
+                        this.position().z,
+                        5,
+                        true,
+                        Level.ExplosionInteraction.MOB
+                );
+            }
+
             this.discard();
         }
     }
@@ -77,10 +99,7 @@ public class PetrifyingEye extends Entity {
                 decrementAndMaybeReset(player, uuid);
             }
         }
-        this.level().addFreshEntity(new DeathLaser(
-                DEATH_LASER,
-                this.level()
-        ));
+
     }
 
     private AABB getEffectAABB() {

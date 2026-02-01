@@ -72,6 +72,7 @@ public class PetrificationEffect extends MobEffect {
         }
 
         return super.applyEffectTick(world, entity, amplifier);
+
     }
 
 }

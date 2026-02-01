@@ -1,5 +1,7 @@
 package unfairweapons;
 
+import com.mojang.authlib.minecraft.client.MinecraftClient;
+import com.mojang.blaze3d.vertex.BufferBuilder;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -7,6 +9,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
+import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -19,6 +22,8 @@ import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import org.lwjgl.glfw.GLFW;
 import unfairweapons.entity.PetrifyingEye;
 import unfairweapons.networking.ApplyPetrification3Packet;
@@ -33,6 +38,8 @@ import static unfairweapons.UnfairWeapons.MOD_ID;
 import static unfairweapons.UnfairWeapons.PETRIFICATION_EFFECT;
 
 public class UnfairWeaponsClient implements ClientModInitializer {
+
+    public record CylinderInstance(Vec3 center, long expireTick) {}
 
     private static final Identifier PETRIFICATION_COOLDOWNS_BACKGROUND = Identifier.fromNamespaceAndPath(MOD_ID, "textures/gui/petrification_image_background.png"
     );
@@ -300,4 +307,6 @@ class PetrifyingEyeRenderer
     public Identifier getTextureLocation(EntityRenderState state) {
         return TEXTURE;
     }
+
+
 }

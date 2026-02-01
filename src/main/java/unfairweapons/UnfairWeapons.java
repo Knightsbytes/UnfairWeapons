@@ -23,6 +23,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import unfairweapons.entity.DeathLaser;
 import unfairweapons.entity.PetrifyingEye;
 import unfairweapons.networking.ApplyPetrification3Packet;
 import unfairweapons.networking.PetrifiedAbility2Packet;
@@ -66,6 +67,15 @@ public class UnfairWeapons implements ModInitializer {
 					.sized(1.0f, 2.0f)
 					.clientTrackingRange(10)
 					.build(ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "petrifying_eye")))
+	);
+
+	public static final EntityType<DeathLaser> DEATH_LASER = Registry.register(
+			BuiltInRegistries.ENTITY_TYPE,
+			Identifier.fromNamespaceAndPath(MOD_ID, "death_laser"),
+			EntityType.Builder.of(DeathLaser::new, MobCategory.MISC)
+					.sized(1.0f, 2.0f)
+					.clientTrackingRange(10)
+					.build(ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "death_laser")))
 	);
 
 	@Override

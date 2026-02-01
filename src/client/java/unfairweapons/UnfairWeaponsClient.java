@@ -25,6 +25,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.lwjgl.glfw.GLFW;
+import unfairweapons.entity.DeathLaser;
 import unfairweapons.entity.PetrifyingEye;
 import unfairweapons.networking.ApplyPetrification3Packet;
 import unfairweapons.networking.PetrifiedAbility2Packet;
@@ -38,8 +39,6 @@ import static unfairweapons.UnfairWeapons.MOD_ID;
 import static unfairweapons.UnfairWeapons.PETRIFICATION_EFFECT;
 
 public class UnfairWeaponsClient implements ClientModInitializer {
-
-    public record CylinderInstance(Vec3 center, long expireTick) {}
 
     private static final Identifier PETRIFICATION_COOLDOWNS_BACKGROUND = Identifier.fromNamespaceAndPath(MOD_ID, "textures/gui/petrification_image_background.png"
     );
@@ -73,6 +72,11 @@ public class UnfairWeaponsClient implements ClientModInitializer {
         EntityRendererRegistry.register(
                 UnfairWeapons.PETRIFYING_EYE_ENTITY,
                 PetrifyingEyeRenderer::new
+        );
+
+        EntityRendererRegistry.register(
+                UnfairWeapons.DEATH_LASER,
+                DeathLaserRenderer::new
         );
 
         final HashMap<String, Long> cooldowns = new HashMap<>();
@@ -299,6 +303,34 @@ class PetrifyingEyeRenderer
 
     @Override
     public void extractRenderState(PetrifyingEye entity,
+                                   EntityRenderState state,
+                                   float partialTick) {
+        super.extractRenderState(entity, state, partialTick);
+    }
+
+    public Identifier getTextureLocation(EntityRenderState state) {
+        return TEXTURE;
+    }
+
+
+}
+
+class DeathLaserRenderer extends EntityRenderer<DeathLaser, EntityRenderState> {
+
+    private static final Identifier TEXTURE =
+            Identifier.fromNamespaceAndPath("minecraft", "textures/entity/pig/pig.png");
+
+    public DeathLaserRenderer(EntityRendererProvider.Context context) {
+        super(context);
+    }
+
+    @Override
+    public EntityRenderState createRenderState() {
+        return new EntityRenderState();
+    }
+
+    @Override
+    public void extractRenderState(DeathLaser entity,
                                    EntityRenderState state,
                                    float partialTick) {
         super.extractRenderState(entity, state, partialTick);

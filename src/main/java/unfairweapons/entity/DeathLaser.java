@@ -52,10 +52,18 @@ public class DeathLaser extends Entity {
             for (int x = 0; x < 50; x++) {
 
                 double angle = (2 * Math.PI * x) / 50;
-                int xOffset = (int) Math.cos(angle) * 10;
-                int zOffset = (int) Math.sin(angle) * 10;
+                int xOffset = (int) (Math.cos(angle) * 10);
+                int zOffset = (int) (Math.sin(angle) * 10);
 
-                level.setBlock(this.getOnPos().offset(xOffset, i, zOffset), Blocks.AIR.defaultBlockState(), 1);
+                BlockPos base = this.getOnPos();
+
+                BlockPos pos = new BlockPos(
+                        base.getX() + xOffset,
+                        i,
+                        base.getZ() + zOffset
+                );
+
+                level.setBlock(pos, Blocks.AIR.defaultBlockState(), 1);
             }
         }
 

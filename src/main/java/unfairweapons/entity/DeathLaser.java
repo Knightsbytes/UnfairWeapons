@@ -52,7 +52,7 @@ public class DeathLaser extends Entity {
 
             int minY = level.getMinY();
             int maxY = level.getMaxY() - 1;
-            int radius = 10;
+            int radius = 5;
 
             for (int y = minY; y <= maxY; y++) {
                 for (int dx = -radius; dx <= radius; dx++) {

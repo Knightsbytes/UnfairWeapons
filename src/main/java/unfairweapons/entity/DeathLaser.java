@@ -10,6 +10,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
@@ -51,29 +52,40 @@ public class DeathLaser extends Entity {
 
             int minY = level.getMinY();
             int maxY = level.getMaxY() - 1;
+            int radius = 10;
 
-            for (int y = minY; y <= maxY; y += 5) {
-                // Blocks
-                for (int step = 0; step < 50; step++) {
-                    double angle = (2 * Math.PI * step) / 50;
-                    int xOffset = (int) (Math.cos(angle) * 10);
-                    int zOffset = (int) (Math.sin(angle) * 10);
+            for (int y = minY; y <= maxY; y++) {
+                for (int dx = -radius; dx <= radius; dx++) {
+                    for (int dz = -radius; dz <= radius; dz++) {
 
-                    BlockPos pos = base.offset(xOffset, y - base.getY(), zOffset);
-                    level.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
+                        if (dx * dx + dz * dz <= radius * radius) {
+                            BlockPos pos = base.offset(dx, y - base.getY(), dz);
+
+                            if (!level.isLoaded(pos)) continue;
+
+                            BlockState state = level.getBlockState(pos);
+
+                            if (!state.isAir()) {
+                                level.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
+                            }
+                        }
+                    }
                 }
 
-                // Particles (send to all players in radius)
+
                 level.sendParticles(
                         ParticleTypes.EXPLOSION_EMITTER,
                         this.getX(),
                         y,
                         this.getZ(),
-                        5, // count
-                        1, 1, 1, // offset
-                        0.1 // speed
+                        1,
+                        1, 1, 1,
+                        0.1
                 );
             }
+        }
+        else{
+            discard();
         }
     }
 

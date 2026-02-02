@@ -64,6 +64,9 @@ public class UnfairWeaponsClient implements ClientModInitializer {
 	public final KeyMapping PetrificationAbility2 = KeyBindingHelper.registerKeyBinding(new KeyMapping("eldritch ability 2", GLFW.GLFW_KEY_RIGHT, ELDRITCH_ABILITIES));
 	public final KeyMapping PetrificationAbility3 = KeyBindingHelper.registerKeyBinding(new KeyMapping("eldritch ability 3", GLFW.GLFW_KEY_DOWN, ELDRITCH_ABILITIES));
     public final KeyMapping PetrificationAbility4 = KeyBindingHelper.registerKeyBinding(new KeyMapping("eldritch ability 4", GLFW.GLFW_KEY_LEFT, ELDRITCH_ABILITIES));
+    public final KeyMapping PetrificationAbilityActivationKey = KeyBindingHelper.registerKeyBinding(new KeyMapping("use ability", GLFW.GLFW_KEY_ENTER, ELDRITCH_ABILITIES));
+
+    static char[] currentKeys = {0, 0, 0, 0};
 
     private static final HashMap<UUID, Long> cooldowns = new HashMap<>();
 
@@ -95,8 +98,6 @@ public class UnfairWeaponsClient implements ClientModInitializer {
 
         final int ABILITY_4_COOLDOWN = 300;
         final int ABILITY_5_COOLDOWN = 300;
-
-        final HashMap<String, Long> eldritchKeyCombo = new HashMap<>();
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (client.player == null || client.level == null) return;
@@ -156,10 +157,31 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                             );
                             continue;
                         }
+                        if (1 <= effectInstance.getAmplifier() && effectInstance.getAmplifier() < 3) {
 
-                        ClientPlayNetworking.send(new SummonPetrifyingEyePacket());
-                        // Set cooldown
-                        cooldowns.put(cooldownKey, currentTick + ABILITY_1_COOLDOWN);
+                            ClientPlayNetworking.send(new SummonPetrifyingEyePacket());
+                            // Set cooldown
+                            cooldowns.put(cooldownKey, currentTick + ABILITY_1_COOLDOWN);
+                        }
+                        else if(effectInstance.getAmplifier() >= 3) {
+                            if (currentKeys[0] == 0){
+                                currentKeys[0] = 1;
+                            }
+
+                            else if (currentKeys[1] == 0){
+                                currentKeys[1] = 1;
+                            }
+
+                            else if (currentKeys[2] == 0){
+                                currentKeys[2] = 1;
+                            }
+
+                            else if (currentKeys[3] == 0){
+                                currentKeys[3] = 1;
+                            }
+
+                            client.player.displayClientMessage(Component.literal(new String(currentKeys)), false);
+                        }
 
                     } else {
                         client.player.displayClientMessage(Component.literal("You don't have the needed effect to use this!"), false);
@@ -183,10 +205,29 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                             );
                             continue;
                         }
+                        if (effectInstance.getAmplifier() == 2) {
+                            ClientPlayNetworking.send(new PetrifiedAbility2Packet());
+                            cooldowns.put(cooldownKey, currentTick + ABILITY_2_COOLDOWN);
+                        }
+                        else if(effectInstance.getAmplifier() >= 3) {
+                            if (currentKeys[0] == 0){
+                                currentKeys[0] = 2;
+                            }
 
-                        ClientPlayNetworking.send(new PetrifiedAbility2Packet());
+                            else if (currentKeys[1] == 0){
+                                currentKeys[1] = 2;
+                            }
 
-                        cooldowns.put(cooldownKey, currentTick + ABILITY_2_COOLDOWN);
+                            else if (currentKeys[2] == 0){
+                                currentKeys[2] = 2;
+                            }
+
+                            else if (currentKeys[3] == 0){
+                                currentKeys[3] = 2;
+                            }
+
+                            client.player.displayClientMessage(Component.literal(new String(currentKeys)), false);
+                        }
 
                     } else {
                         client.player.displayClientMessage(Component.literal("You don't have the needed effect to use this!"), false);
@@ -211,20 +252,35 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                             continue;
                         }
 
-                        // Perform ability
-                        client.player.displayClientMessage(Component.literal("Ability 3 used!"), false);
+                        if (effectInstance.getAmplifier() == 2) {
 
-                        // Set cooldown
-                        cooldowns.put(cooldownKey, currentTick + ABILITY_3_COOLDOWN);
+                            cooldowns.put(cooldownKey, currentTick + ABILITY_3_COOLDOWN);
 
-                        if (cooldowns.getOrDefault(playerId + "_ability3_triggered", 0L) == 0) {
-                            cooldowns.put(playerId + "_ability3_triggered", 1L);
+                            if (cooldowns.getOrDefault(playerId + "_ability3_triggered", 0L) == 0) {
+                                cooldowns.put(playerId + "_ability3_triggered", 1L);
+                            } else {
+                                cooldowns.put(playerId + "_ability3_triggered", 0L);
+                            }
                         }
+                        else if(effectInstance.getAmplifier() >= 3) {
+                            if (currentKeys[0] == 0){
+                                currentKeys[0] = 3;
+                            }
 
-                        else {
-                            cooldowns.put(playerId + "_ability3_triggered", 0L);
+                            else if (currentKeys[1] == 0){
+                                currentKeys[1] = 3;
+                            }
+
+                            else if (currentKeys[2] == 0){
+                                currentKeys[2] = 3;
+                            }
+
+                            else if (currentKeys[3] == 0){
+                                currentKeys[3] = 3;
+                            }
+
+                            client.player.displayClientMessage(Component.literal(new String(currentKeys)), false);
                         }
-
                     } else {
                         client.player.displayClientMessage(Component.literal("You don't have the needed effect to use this!"), false);
                     }
@@ -238,12 +294,33 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                     if (effectInstance.getAmplifier() == 1) {
                         ClientPlayNetworking.send(new ApplyPetrification3Packet());
                     }
+
+                    else if(effectInstance.getAmplifier() >= 3) {
+                        if (currentKeys[0] == 0){
+                            currentKeys[0] = 4;
+                        }
+
+                        else if (currentKeys[1] == 0){
+                            currentKeys[1] = 4;
+                        }
+
+                        else if (currentKeys[2] == 0){
+                            currentKeys[2] = 4;
+                        }
+
+                        else if (currentKeys[3] == 0){
+                            currentKeys[3] = 4;
+                        }
+
+                        client.player.displayClientMessage(Component.literal(new String(currentKeys)), false);
+                    }
                 }
             }
             String durationKey = playerId + "_ability3_triggered";
             if (cooldowns.getOrDefault(durationKey, 0L) == 1) {
                 ClientPlayNetworking.send(new SpawnPetrifiedSludgePacket(client.player.getOnPos()));
             }
+
         });
 
         HudElementRegistry.attachElementBefore(VanillaHudElements.CHAT, Identifier.fromNamespaceAndPath(MOD_ID, "before_chat"), UnfairWeaponsClient::render);
@@ -365,6 +442,154 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                 context.drawString(font, String.format("%.1f", PetrificationCooldown3 / 20.0), x + 30, y + 103, 0xFFFFFFFF, true);
                 context.drawString(font, String.format("%.1f", PetrificationCooldown4 / 20.0), x + 30, y + 131, 0xFFFFFFFF, true);
                 context.drawString(font, String.format("%.1f", PetrificationCooldown5 / 20.0), x + 30, y + 159, 0xFFFFFFFF, true);
+
+                if (currentKeys[0] == 1){
+                    context.blit(
+                            RenderPipelines.GUI_TEXTURED,
+                            PETRIFICATION_GUI_SELECTION_UP,
+                            x + 5, y + 7, 0, 0,
+                            25, 25,
+                            25, 25
+                    );
+                }
+                if (currentKeys[0] == 2){
+                    context.blit(
+                            RenderPipelines.GUI_TEXTURED,
+                            PETRIFICATION_GUI_SELECTION_RIGHT,
+                            x + 5, y + 7, 0, 0,
+                            25, 25,
+                            25, 25
+                    );
+                }
+                if (currentKeys[0] == 3){
+                    context.blit(
+                            RenderPipelines.GUI_TEXTURED,
+                            PETRIFICATION_GUI_SELECTION_DOWN,
+                            x + 5, y + 7, 0, 0,
+                            25, 25,
+                            25, 25
+                    );
+                }
+                if (currentKeys[0] == 4){
+                    context.blit(
+                            RenderPipelines.GUI_TEXTURED,
+                            PETRIFICATION_GUI_SELECTION_LEFT,
+                            x + 5, y + 7, 0, 0,
+                            25, 25,
+                            25, 25
+                    );
+                }
+
+                if (currentKeys[1] == 1){
+                    context.blit(
+                            RenderPipelines.GUI_TEXTURED,
+                            PETRIFICATION_GUI_SELECTION_UP,
+                            x + 27, y + 7, 0, 0,
+                            25, 25,
+                            25, 25
+                    );
+                }
+                if (currentKeys[1] == 2){
+                    context.blit(
+                            RenderPipelines.GUI_TEXTURED,
+                            PETRIFICATION_GUI_SELECTION_RIGHT,
+                            x + 27, y + 7, 0, 0,
+                            25, 25,
+                            25, 25
+                    );
+                }
+                if (currentKeys[1] == 3){
+                    context.blit(
+                            RenderPipelines.GUI_TEXTURED,
+                            PETRIFICATION_GUI_SELECTION_DOWN,
+                            x + 27, y + 7, 0, 0,
+                            25, 25,
+                            25, 25
+                    );
+                }
+                if (currentKeys[1] == 4){
+                    context.blit(
+                            RenderPipelines.GUI_TEXTURED,
+                            PETRIFICATION_GUI_SELECTION_LEFT,
+                            x + 27, y + 7, 0, 0,
+                            25, 25,
+                            25, 25
+                    );
+                }
+
+                if (currentKeys[2] == 1){
+                    context.blit(
+                            RenderPipelines.GUI_TEXTURED,
+                            PETRIFICATION_GUI_SELECTION_UP,
+                            x + 50, y + 7, 0, 0,
+                            25, 25,
+                            25, 25
+                    );
+                }
+                if (currentKeys[2] == 2){
+                    context.blit(
+                            RenderPipelines.GUI_TEXTURED,
+                            PETRIFICATION_GUI_SELECTION_RIGHT,
+                            x + 50, y + 7, 0, 0,
+                            25, 25,
+                            25, 25
+                    );
+                }
+                if (currentKeys[2] == 3){
+                    context.blit(
+                            RenderPipelines.GUI_TEXTURED,
+                            PETRIFICATION_GUI_SELECTION_DOWN,
+                            x + 50, y + 7, 0, 0,
+                            25, 25,
+                            25, 25
+                    );
+                }
+                if (currentKeys[2] == 4){
+                    context.blit(
+                            RenderPipelines.GUI_TEXTURED,
+                            PETRIFICATION_GUI_SELECTION_LEFT,
+                            x + 50, y + 7, 0, 0,
+                            25, 25,
+                            25, 25
+                    );
+                }
+
+                if (currentKeys[3] == 1){
+                    context.blit(
+                            RenderPipelines.GUI_TEXTURED,
+                            PETRIFICATION_GUI_SELECTION_UP,
+                            x + 73, y + 7, 0, 0,
+                            25, 25,
+                            25, 25
+                    );
+                }
+                if (currentKeys[3] == 2){
+                    context.blit(
+                            RenderPipelines.GUI_TEXTURED,
+                            PETRIFICATION_GUI_SELECTION_RIGHT,
+                            x + 73, y + 7, 0, 0,
+                            25, 25,
+                            25, 25
+                    );
+                }
+                if (currentKeys[3] == 3){
+                    context.blit(
+                            RenderPipelines.GUI_TEXTURED,
+                            PETRIFICATION_GUI_SELECTION_DOWN,
+                            x + 73, y + 7, 0, 0,
+                            25, 25,
+                            25, 25
+                    );
+                }
+                if (currentKeys[3] == 4){
+                    context.blit(
+                            RenderPipelines.GUI_TEXTURED,
+                            PETRIFICATION_GUI_SELECTION_LEFT,
+                            x + 73, y + 7, 0, 0,
+                            25, 25,
+                            25, 25
+                    );
+                }
             }
         }
 

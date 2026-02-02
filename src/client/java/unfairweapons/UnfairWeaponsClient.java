@@ -321,6 +321,10 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                 ClientPlayNetworking.send(new SpawnPetrifiedSludgePacket(client.player.getOnPos()));
             }
 
+            while (PetrificationAbilityActivationKey.consumeClick()){
+                currentKeys = new char[]{0, 0, 0, 0};
+            }
+
         });
 
         HudElementRegistry.attachElementBefore(VanillaHudElements.CHAT, Identifier.fromNamespaceAndPath(MOD_ID, "before_chat"), UnfairWeaponsClient::render);

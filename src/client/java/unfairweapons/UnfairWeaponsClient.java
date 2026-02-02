@@ -60,16 +60,18 @@ public class UnfairWeaponsClient implements ClientModInitializer {
 
 	//public final KeyMapping keyDebugCrash = new KeyMapping("key.debug.crash", InputConstants.Type.KEYSYM, 67, KeyMapping.Category.DEBUG);
 
-	public final KeyMapping PetrificationAbility1 = KeyBindingHelper.registerKeyBinding(new KeyMapping("eldritch ability 1", GLFW.GLFW_KEY_V, ELDRITCH_ABILITIES));
-	public final KeyMapping PetrificationAbility2 = KeyBindingHelper.registerKeyBinding(new KeyMapping("eldritch ability 2", GLFW.GLFW_KEY_B, ELDRITCH_ABILITIES));
-	public final KeyMapping PetrificationAbility3 = KeyBindingHelper.registerKeyBinding(new KeyMapping("eldritch ability 3", GLFW.GLFW_KEY_N, ELDRITCH_ABILITIES));
-    public final KeyMapping PetrificationAbility4 = KeyBindingHelper.registerKeyBinding(new KeyMapping("eldritch ability 4", GLFW.GLFW_KEY_M, ELDRITCH_ABILITIES));
+	public final KeyMapping PetrificationAbility1 = KeyBindingHelper.registerKeyBinding(new KeyMapping("eldritch ability 1", GLFW.GLFW_KEY_UP, ELDRITCH_ABILITIES));
+	public final KeyMapping PetrificationAbility2 = KeyBindingHelper.registerKeyBinding(new KeyMapping("eldritch ability 2", GLFW.GLFW_KEY_RIGHT, ELDRITCH_ABILITIES));
+	public final KeyMapping PetrificationAbility3 = KeyBindingHelper.registerKeyBinding(new KeyMapping("eldritch ability 3", GLFW.GLFW_KEY_DOWN, ELDRITCH_ABILITIES));
+    public final KeyMapping PetrificationAbility4 = KeyBindingHelper.registerKeyBinding(new KeyMapping("eldritch ability 4", GLFW.GLFW_KEY_LEFT, ELDRITCH_ABILITIES));
 
     private static final HashMap<UUID, Long> cooldowns = new HashMap<>();
 
     private static long PetrificationCooldown1;
     private static long PetrificationCooldown2;
     private static long PetrificationCooldown3;
+    private static long PetrificationCooldown4;
+    private static long PetrificationCooldown5;
 
     private static long PetrificationAbility3Duration;
 
@@ -91,6 +93,11 @@ public class UnfairWeaponsClient implements ClientModInitializer {
         final int ABILITY_2_COOLDOWN = 200;
         final int ABILITY_3_COOLDOWN = 300;
 
+        final int ABILITY_4_COOLDOWN = 300;
+        final int ABILITY_5_COOLDOWN = 300;
+
+        final HashMap<String, Long> eldritchKeyCombo = new HashMap<>();
+
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (client.player == null || client.level == null) return;
 
@@ -100,6 +107,8 @@ public class UnfairWeaponsClient implements ClientModInitializer {
             String cooldownKey1 = playerId + "_ability1";
             String cooldownKey2 = playerId + "_ability2";
             String cooldownKey3 = playerId + "_ability3";
+            String cooldownKey4 = playerId + "_ability4";
+            String cooldownKey5 = playerId + "_ability5";
 
             if (cooldowns.getOrDefault(cooldownKey1, 0L) > currentTick) {
                 PetrificationCooldown1 = cooldowns.get(cooldownKey1) - currentTick;
@@ -117,6 +126,18 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                 PetrificationCooldown3 = cooldowns.get(cooldownKey3) - currentTick;
             }else {
                 PetrificationCooldown3 = 0;
+            }
+
+            if (cooldowns.getOrDefault(cooldownKey4, 0L) > currentTick) {
+                PetrificationCooldown4 = cooldowns.get(cooldownKey4) - currentTick;
+            }else {
+                PetrificationCooldown4 = 0;
+            }
+
+            if (cooldowns.getOrDefault(cooldownKey5, 0L) > currentTick) {
+                PetrificationCooldown5 = cooldowns.get(cooldownKey5) - currentTick;
+            }else {
+                PetrificationCooldown5 = 0;
             }
 
             // Ability 1
@@ -225,8 +246,6 @@ public class UnfairWeaponsClient implements ClientModInitializer {
             }
         });
 
-
-
         HudElementRegistry.attachElementBefore(VanillaHudElements.CHAT, Identifier.fromNamespaceAndPath(MOD_ID, "before_chat"), UnfairWeaponsClient::render);
 
 	}
@@ -246,6 +265,9 @@ public class UnfairWeaponsClient implements ClientModInitializer {
         // Image dimensions
         int width = 128;
         int height = 32;
+
+        int width2 = 96;
+        int height2 = 192;
 
         Font font = mc.font;
 
@@ -288,55 +310,61 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                 context.drawString(font, String.format("%.1f", PetrificationCooldown2 / 20.0), x + 54, y + 14, 0xFFFFFFFF, true);
                 context.drawString(font, String.format("%.1f", PetrificationCooldown3 / 20.0), x + 87, y + 14, 0xFFFFFFFF, true);
             }
-            else if (effectInstanceAmplification < 3){
+            else if (effectInstanceAmplification >= 3){
 
                 context.blit(
                         RenderPipelines.GUI_TEXTURED,
                         PETRIFICATION_GUI_LEVEL_2_BACKGROUND,
                         x, y, 0, 0,
-                        width, height,
-                        width, height
+                        width2, height2,
+                        width2, height2
                 );
 
                 context.blit(
                         RenderPipelines.GUI_TEXTURED,
                         PETRIFICATION_GUI_EYE_ABILITY,
                         x + 4, y + 43, 0, 0,
-                        width, height,
-                        width, height
+                        25, 25,
+                        25, 25
                 );
 
                 context.blit(
                         RenderPipelines.GUI_TEXTURED,
                         PETRIFICATION_GUI_HEART_ABILITY,
                         x + 4, y + 21, 0, 0,
-                        width, height,
-                        width, height
+                        25, 25,
+                        25, 25
                 );
 
                 context.blit(
                         RenderPipelines.GUI_TEXTURED,
                         PETRIFICATION_GUI_TENTACLE_ABILITY,
                         x + 4, y + 99, 0, 0,
-                        width, height,
-                        width, height
+                        25, 25,
+                        25, 25
                 );
 
                 context.blit(
                         RenderPipelines.GUI_TEXTURED,
                         PETRIFICATION_GUI_LASER_ABILITY,
                         x + 4, y + 127, 0, 0,
-                        width, height,
-                        width, height
+                        25, 25,
+                        25, 25
                 );
 
                 context.blit(
                         RenderPipelines.GUI_TEXTURED,
                         PETRIFICATION_GUI_BROKEN_ABILITY,
                         x + 4, y + 155, 0, 0,
-                        width, height,
-                        width, height
+                        25, 25,
+                        25, 25
                 );
+
+                context.drawString(font, String.format("%.1f", PetrificationCooldown1 / 20.0), x + 30, y + 67, 0xFFFFFFFF, true);
+                context.drawString(font, String.format("%.1f", PetrificationCooldown2 / 20.0), x + 30, y + 95, 0xFFFFFFFF, true);
+                context.drawString(font, String.format("%.1f", PetrificationCooldown3 / 20.0), x + 30, y + 123, 0xFFFFFFFF, true);
+                context.drawString(font, String.format("%.1f", PetrificationCooldown4 / 20.0), x + 30, y + 151, 0xFFFFFFFF, true);
+                context.drawString(font, String.format("%.1f", PetrificationCooldown5 / 20.0), x + 30, y + 179, 0xFFFFFFFF, true);
             }
         }
 

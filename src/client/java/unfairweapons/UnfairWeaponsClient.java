@@ -179,8 +179,6 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                             else if (currentKeys[3] == 0){
                                 currentKeys[3] = 1;
                             }
-
-                            client.player.displayClientMessage(Component.literal(new String(currentKeys)), false);
                         }
 
                     } else {
@@ -225,8 +223,6 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                             else if (currentKeys[3] == 0){
                                 currentKeys[3] = 2;
                             }
-
-                            client.player.displayClientMessage(Component.literal(new String(currentKeys)), false);
                         }
 
                     } else {
@@ -278,8 +274,6 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                             else if (currentKeys[3] == 0){
                                 currentKeys[3] = 3;
                             }
-
-                            client.player.displayClientMessage(Component.literal(new String(currentKeys)), false);
                         }
                     } else {
                         client.player.displayClientMessage(Component.literal("You don't have the needed effect to use this!"), false);
@@ -311,8 +305,6 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                         else if (currentKeys[3] == 0){
                             currentKeys[3] = 4;
                         }
-
-                        client.player.displayClientMessage(Component.literal(new String(currentKeys)), false);
                     }
                 }
             }

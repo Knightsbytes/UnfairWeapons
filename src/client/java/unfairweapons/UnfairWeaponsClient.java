@@ -448,8 +448,8 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                             RenderPipelines.GUI_TEXTURED,
                             PETRIFICATION_GUI_SELECTION_UP,
                             x + 5, y + 7, 0, 0,
-                            25, 25,
-                            25, 25
+                            18, 18,
+                            18, 18
                     );
                 }
                 if (currentKeys[0] == 2){
@@ -457,8 +457,8 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                             RenderPipelines.GUI_TEXTURED,
                             PETRIFICATION_GUI_SELECTION_RIGHT,
                             x + 5, y + 7, 0, 0,
-                            25, 25,
-                            25, 25
+                            18, 18,
+                            18, 18
                     );
                 }
                 if (currentKeys[0] == 3){
@@ -466,8 +466,8 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                             RenderPipelines.GUI_TEXTURED,
                             PETRIFICATION_GUI_SELECTION_DOWN,
                             x + 5, y + 7, 0, 0,
-                            25, 25,
-                            25, 25
+                            18, 18,
+                            18, 18
                     );
                 }
                 if (currentKeys[0] == 4){
@@ -475,8 +475,8 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                             RenderPipelines.GUI_TEXTURED,
                             PETRIFICATION_GUI_SELECTION_LEFT,
                             x + 5, y + 7, 0, 0,
-                            25, 25,
-                            25, 25
+                            18, 18,
+                            18, 18
                     );
                 }
 
@@ -485,8 +485,8 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                             RenderPipelines.GUI_TEXTURED,
                             PETRIFICATION_GUI_SELECTION_UP,
                             x + 27, y + 7, 0, 0,
-                            25, 25,
-                            25, 25
+                            18, 18,
+                            18, 18
                     );
                 }
                 if (currentKeys[1] == 2){
@@ -494,8 +494,8 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                             RenderPipelines.GUI_TEXTURED,
                             PETRIFICATION_GUI_SELECTION_RIGHT,
                             x + 27, y + 7, 0, 0,
-                            25, 25,
-                            25, 25
+                            18, 18,
+                            18, 18
                     );
                 }
                 if (currentKeys[1] == 3){
@@ -503,8 +503,8 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                             RenderPipelines.GUI_TEXTURED,
                             PETRIFICATION_GUI_SELECTION_DOWN,
                             x + 27, y + 7, 0, 0,
-                            25, 25,
-                            25, 25
+                            18, 18,
+                            18, 18
                     );
                 }
                 if (currentKeys[1] == 4){
@@ -512,8 +512,8 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                             RenderPipelines.GUI_TEXTURED,
                             PETRIFICATION_GUI_SELECTION_LEFT,
                             x + 27, y + 7, 0, 0,
-                            25, 25,
-                            25, 25
+                            18, 18,
+                            18, 18
                     );
                 }
 
@@ -522,8 +522,8 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                             RenderPipelines.GUI_TEXTURED,
                             PETRIFICATION_GUI_SELECTION_UP,
                             x + 50, y + 7, 0, 0,
-                            25, 25,
-                            25, 25
+                            18, 18,
+                            18, 18
                     );
                 }
                 if (currentKeys[2] == 2){
@@ -531,8 +531,8 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                             RenderPipelines.GUI_TEXTURED,
                             PETRIFICATION_GUI_SELECTION_RIGHT,
                             x + 50, y + 7, 0, 0,
-                            25, 25,
-                            25, 25
+                            18, 18,
+                            18, 18
                     );
                 }
                 if (currentKeys[2] == 3){
@@ -540,8 +540,8 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                             RenderPipelines.GUI_TEXTURED,
                             PETRIFICATION_GUI_SELECTION_DOWN,
                             x + 50, y + 7, 0, 0,
-                            25, 25,
-                            25, 25
+                            18, 18,
+                            18, 18
                     );
                 }
                 if (currentKeys[2] == 4){
@@ -549,8 +549,8 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                             RenderPipelines.GUI_TEXTURED,
                             PETRIFICATION_GUI_SELECTION_LEFT,
                             x + 50, y + 7, 0, 0,
-                            25, 25,
-                            25, 25
+                            18, 18,
+                            18, 18
                     );
                 }
 
@@ -559,8 +559,8 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                             RenderPipelines.GUI_TEXTURED,
                             PETRIFICATION_GUI_SELECTION_UP,
                             x + 73, y + 7, 0, 0,
-                            25, 25,
-                            25, 25
+                            18, 18,
+                            18, 18
                     );
                 }
                 if (currentKeys[3] == 2){
@@ -568,8 +568,8 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                             RenderPipelines.GUI_TEXTURED,
                             PETRIFICATION_GUI_SELECTION_RIGHT,
                             x + 73, y + 7, 0, 0,
-                            25, 25,
-                            25, 25
+                            18, 18,
+                            18, 18
                     );
                 }
                 if (currentKeys[3] == 3){
@@ -577,8 +577,8 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                             RenderPipelines.GUI_TEXTURED,
                             PETRIFICATION_GUI_SELECTION_DOWN,
                             x + 73, y + 7, 0, 0,
-                            25, 25,
-                            25, 25
+                            18, 18,
+                            18, 18
                     );
                 }
                 if (currentKeys[3] == 4){
@@ -586,8 +586,8 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                             RenderPipelines.GUI_TEXTURED,
                             PETRIFICATION_GUI_SELECTION_LEFT,
                             x + 73, y + 7, 0, 0,
-                            25, 25,
-                            25, 25
+                            18, 18,
+                            18, 18
                     );
                 }
             }

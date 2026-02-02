@@ -331,7 +331,7 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                 context.blit(
                         RenderPipelines.GUI_TEXTURED,
                         PETRIFICATION_GUI_HEART_ABILITY,
-                        x + 4, y + 21, 0, 0,
+                        x + 4, y + 71, 0, 0,
                         25, 25,
                         25, 25
                 );
@@ -360,11 +360,11 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                         25, 25
                 );
 
-                context.drawString(font, String.format("%.1f", PetrificationCooldown1 / 20.0), x + 30, y + 67, 0xFFFFFFFF, true);
-                context.drawString(font, String.format("%.1f", PetrificationCooldown2 / 20.0), x + 30, y + 95, 0xFFFFFFFF, true);
-                context.drawString(font, String.format("%.1f", PetrificationCooldown3 / 20.0), x + 30, y + 123, 0xFFFFFFFF, true);
-                context.drawString(font, String.format("%.1f", PetrificationCooldown4 / 20.0), x + 30, y + 151, 0xFFFFFFFF, true);
-                context.drawString(font, String.format("%.1f", PetrificationCooldown5 / 20.0), x + 30, y + 179, 0xFFFFFFFF, true);
+                context.drawString(font, String.format("%.1f", PetrificationCooldown1 / 20.0), x + 30, y + 57, 0xFFFFFFFF, true);
+                context.drawString(font, String.format("%.1f", PetrificationCooldown2 / 20.0), x + 30, y + 85, 0xFFFFFFFF, true);
+                context.drawString(font, String.format("%.1f", PetrificationCooldown3 / 20.0), x + 30, y + 113, 0xFFFFFFFF, true);
+                context.drawString(font, String.format("%.1f", PetrificationCooldown4 / 20.0), x + 30, y + 141, 0xFFFFFFFF, true);
+                context.drawString(font, String.format("%.1f", PetrificationCooldown5 / 20.0), x + 30, y + 169, 0xFFFFFFFF, true);
             }
         }
 

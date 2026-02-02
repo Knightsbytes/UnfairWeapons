@@ -40,14 +40,21 @@ import static unfairweapons.UnfairWeapons.PETRIFICATION_EFFECT;
 
 public class UnfairWeaponsClient implements ClientModInitializer {
 
-    private static final Identifier PETRIFICATION_COOLDOWNS_BACKGROUND = Identifier.fromNamespaceAndPath(MOD_ID, "textures/gui/petrification_image_background.png"
-    );
+    private static final Identifier PETRIFICATION_COOLDOWNS_BACKGROUND = Identifier.fromNamespaceAndPath(MOD_ID, "textures/gui/petrification_image_background.png");
+    private static final Identifier PETRIFICATION_GUI_NEEDLE_FULL = Identifier.fromNamespaceAndPath(MOD_ID, "textures/gui/petrification_gui_needle_full.png");
+    private static final Identifier PETRIFICATION_GUI_NEEDLE_EMPTY = Identifier.fromNamespaceAndPath(MOD_ID, "textures/gui/petrification_gui_needle_empty.png");
 
-    private static final Identifier PETRIFICATION_GUI_NEEDLE_FULL = Identifier.fromNamespaceAndPath(MOD_ID, "textures/gui/petrification_gui_needle_full.png"
-    );
+    private static final Identifier PETRIFICATION_GUI_LEVEL_2_BACKGROUND = Identifier.fromNamespaceAndPath(MOD_ID, "textures/gui/petrification_abilities/advanced_petrification_gui_background.png");
+    private static final Identifier PETRIFICATION_GUI_SELECTION_UP = Identifier.fromNamespaceAndPath(MOD_ID, "textures/gui/petrification_abilities/ability_selection_up.png");
+    private static final Identifier PETRIFICATION_GUI_SELECTION_DOWN = Identifier.fromNamespaceAndPath(MOD_ID, "textures/gui/petrification_abilities/ability_selection_down.png");
+    private static final Identifier PETRIFICATION_GUI_SELECTION_LEFT = Identifier.fromNamespaceAndPath(MOD_ID, "textures/gui/petrification_abilities/ability_selection_left.png");
+    private static final Identifier PETRIFICATION_GUI_SELECTION_RIGHT = Identifier.fromNamespaceAndPath(MOD_ID, "textures/gui/petrification_abilities/ability_selection_right.png");
+    private static final Identifier PETRIFICATION_GUI_EYE_ABILITY = Identifier.fromNamespaceAndPath(MOD_ID, "textures/gui/petrification_abilities/ability_0.png");
+    private static final Identifier PETRIFICATION_GUI_HEART_ABILITY = Identifier.fromNamespaceAndPath(MOD_ID, "textures/gui/petrification_abilities/ability_1.png");
+    private static final Identifier PETRIFICATION_GUI_TENTACLE_ABILITY = Identifier.fromNamespaceAndPath(MOD_ID, "textures/gui/petrification_abilities/ability_2.png");
+    private static final Identifier PETRIFICATION_GUI_LASER_ABILITY = Identifier.fromNamespaceAndPath(MOD_ID, "textures/gui/petrification_abilities/ability_3.png");
+    private static final Identifier PETRIFICATION_GUI_BROKEN_ABILITY = Identifier.fromNamespaceAndPath(MOD_ID, "textures/gui/petrification_abilities/ability_4.png");
 
-    private static final Identifier PETRIFICATION_GUI_NEEDLE_EMPTY = Identifier.fromNamespaceAndPath(MOD_ID, "textures/gui/petrification_gui_needle_empty.png"
-    );
 
 	KeyMapping.Category ELDRITCH_ABILITIES = new KeyMapping.Category(Identifier.fromNamespaceAndPath(MOD_ID, "eldritch_abilities"));
 
@@ -247,7 +254,9 @@ public class UnfairWeaponsClient implements ClientModInitializer {
             MobEffectInstance effectInstance = mc.player.getEffect(PETRIFICATION_EFFECT);
             int effectInstanceAmplification = effectInstance.getAmplifier();
 
-            if (effectInstanceAmplification >= 1){
+            if (effectInstanceAmplification >= 1 && effectInstanceAmplification < 3) {
+
+
                 context.blit(
                         RenderPipelines.GUI_TEXTURED,
                         PETRIFICATION_COOLDOWNS_BACKGROUND,
@@ -265,8 +274,7 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                             13, 16,
                             13, 16
                     );
-                }
-                else{
+                } else {
                     context.blit(
                             RenderPipelines.GUI_TEXTURED,
                             PETRIFICATION_GUI_NEEDLE_EMPTY,
@@ -280,7 +288,56 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                 context.drawString(font, String.format("%.1f", PetrificationCooldown2 / 20.0), x + 54, y + 14, 0xFFFFFFFF, true);
                 context.drawString(font, String.format("%.1f", PetrificationCooldown3 / 20.0), x + 87, y + 14, 0xFFFFFFFF, true);
             }
+            else if (effectInstanceAmplification < 3){
 
+                context.blit(
+                        RenderPipelines.GUI_TEXTURED,
+                        PETRIFICATION_GUI_LEVEL_2_BACKGROUND,
+                        x, y, 0, 0,
+                        width, height,
+                        width, height
+                );
+
+                context.blit(
+                        RenderPipelines.GUI_TEXTURED,
+                        PETRIFICATION_GUI_EYE_ABILITY,
+                        x + 4, y + 43, 0, 0,
+                        width, height,
+                        width, height
+                );
+
+                context.blit(
+                        RenderPipelines.GUI_TEXTURED,
+                        PETRIFICATION_GUI_HEART_ABILITY,
+                        x + 4, y + 21, 0, 0,
+                        width, height,
+                        width, height
+                );
+
+                context.blit(
+                        RenderPipelines.GUI_TEXTURED,
+                        PETRIFICATION_GUI_TENTACLE_ABILITY,
+                        x + 4, y + 99, 0, 0,
+                        width, height,
+                        width, height
+                );
+
+                context.blit(
+                        RenderPipelines.GUI_TEXTURED,
+                        PETRIFICATION_GUI_LASER_ABILITY,
+                        x + 4, y + 127, 0, 0,
+                        width, height,
+                        width, height
+                );
+
+                context.blit(
+                        RenderPipelines.GUI_TEXTURED,
+                        PETRIFICATION_GUI_BROKEN_ABILITY,
+                        x + 4, y + 155, 0, 0,
+                        width, height,
+                        width, height
+                );
+            }
         }
 
     }

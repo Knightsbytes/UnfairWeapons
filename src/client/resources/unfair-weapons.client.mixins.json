@@ -4,7 +4,8 @@
 	"compatibilityLevel": "JAVA_21",
 	"client": [
 		"HeartTypeMixin",
-		"EldritchSkinMixin"
+		"EldritchSkinMixin",
+		"GameRendererMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

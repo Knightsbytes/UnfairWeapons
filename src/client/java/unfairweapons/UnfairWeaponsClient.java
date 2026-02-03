@@ -352,6 +352,17 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                         }
                     }
 
+                    if (Arrays.equals(currentKeys, new char[]{4, 4, 4, 4})) {
+                        // Check cooldown
+                        String cooldownKey = playerId + "_ability4";
+                        if (cooldowns.getOrDefault(cooldownKey, 0L) > currentTick) {
+                            continue;
+                        }
+
+                        ClientPlayNetworking.send(new PetrifiedAbility2Packet());
+                        cooldowns.put(cooldownKey, currentTick + ABILITY_4_COOLDOWN);
+                    }
+
                 }
 
 

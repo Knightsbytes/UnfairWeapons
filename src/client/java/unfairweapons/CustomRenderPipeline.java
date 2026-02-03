@@ -32,7 +32,6 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
 
-
 import static unfairweapons.UnfairWeapons.MOD_ID;
 
 public class CustomRenderPipeline implements ClientModInitializer {
@@ -149,6 +148,10 @@ public class CustomRenderPipeline implements ClientModInitializer {
 
         // Initialize or resize the vertex buffer as needed
         if (vertexBuffer == null || vertexBuffer.size() < vertexBufferSize) {
+            if (vertexBuffer != null) {
+                vertexBuffer.close();
+            }
+
             vertexBuffer = new MappableRingBuffer(() -> MOD_ID + " example render pipeline", GpuBuffer.USAGE_VERTEX | GpuBuffer.USAGE_MAP_WRITE, vertexBufferSize);
         }
 

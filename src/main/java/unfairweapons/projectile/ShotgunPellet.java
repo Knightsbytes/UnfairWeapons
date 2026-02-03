@@ -57,7 +57,7 @@ public class ShotgunPellet extends ThrowableItemProjectile {
     protected void onHitEntity(EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
         Entity entity = entityHitResult.getEntity();
-        int damage = 20;
+        int damage = 90;
         entity.hurt(this.damageSources().thrown(this, this.getOwner()), damage);
     }
 

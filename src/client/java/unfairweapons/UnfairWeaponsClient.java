@@ -32,7 +32,9 @@ import unfairweapons.networking.PetrifiedAbility2Packet;
 import unfairweapons.networking.SpawnPetrifiedSludgePacket;
 import unfairweapons.networking.SummonPetrifyingEyePacket;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.UUID;
 
 import static unfairweapons.UnfairWeapons.MOD_ID;
@@ -186,8 +188,6 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                     }
                 }
             }
-
-            // Ability 2
             while (PetrificationAbility2.consumeClick()) {
                 MobEffectInstance effectInstance = client.player.getEffect(PETRIFICATION_EFFECT);
 
@@ -230,8 +230,6 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                     }
                 }
             }
-
-            // Ability 3
             while (PetrificationAbility3.consumeClick()) {
                 MobEffectInstance effectInstance = client.player.getEffect(PETRIFICATION_EFFECT);
 
@@ -280,7 +278,6 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                     }
                 }
             }
-
             while (PetrificationAbility4.consumeClick()) {
                 MobEffectInstance effectInstance = client.player.getEffect(PETRIFICATION_EFFECT);
 
@@ -314,6 +311,50 @@ public class UnfairWeaponsClient implements ClientModInitializer {
             }
 
             while (PetrificationAbilityActivationKey.consumeClick()){
+                MobEffectInstance effectInstance = client.player.getEffect(PETRIFICATION_EFFECT);
+
+                if (effectInstance != null) {
+                    if (Arrays.equals(currentKeys, new char[]{1, 1, 1, 1})) {
+                        // Check cooldown
+                        String cooldownKey = playerId + "_ability1";
+                        if (cooldowns.getOrDefault(cooldownKey, 0L) > currentTick) {
+                            continue;
+                        }
+
+                        ClientPlayNetworking.send(new SummonPetrifyingEyePacket());
+                        cooldowns.put(cooldownKey, currentTick + ABILITY_1_COOLDOWN);
+                    }
+
+                    if (Arrays.equals(currentKeys, new char[]{2, 2, 2, 2})) {
+                        // Check cooldown
+                        String cooldownKey = playerId + "_ability2";
+                        if (cooldowns.getOrDefault(cooldownKey, 0L) > currentTick) {
+                            continue;
+                        }
+
+                        ClientPlayNetworking.send(new PetrifiedAbility2Packet());
+                        cooldowns.put(cooldownKey, currentTick + ABILITY_2_COOLDOWN);
+                    }
+
+                    if (Arrays.equals(currentKeys, new char[]{3, 3, 3, 3})) {
+                        // Check cooldown
+                        String cooldownKey = playerId + "_ability2";
+                        if (cooldowns.getOrDefault(cooldownKey, 0L) > currentTick) {
+                            continue;
+                        }
+
+                        cooldowns.put(cooldownKey, currentTick + ABILITY_3_COOLDOWN);
+
+                        if (cooldowns.getOrDefault(playerId + "_ability3_triggered", 0L) == 0) {
+                            cooldowns.put(playerId + "_ability3_triggered", 1L);
+                        } else {
+                            cooldowns.put(playerId + "_ability3_triggered", 0L);
+                        }
+                    }
+
+                }
+
+
                 currentKeys = new char[]{0, 0, 0, 0};
             }
 

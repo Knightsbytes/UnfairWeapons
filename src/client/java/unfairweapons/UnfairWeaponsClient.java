@@ -6,6 +6,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
@@ -27,6 +28,7 @@ import net.minecraft.world.phys.Vec3;
 import org.lwjgl.glfw.GLFW;
 import unfairweapons.entity.DeathLaser;
 import unfairweapons.entity.PetrifyingEye;
+import unfairweapons.models.StableEldritchHorns;
 import unfairweapons.networking.ApplyPetrification3Packet;
 import unfairweapons.networking.PetrifiedAbility2Packet;
 import unfairweapons.networking.SpawnPetrifiedSludgePacket;
@@ -82,6 +84,10 @@ public class UnfairWeaponsClient implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
+        EntityModelLayerRegistry.registerModelLayer(
+                ModelLayers.CUSTOM_HORNS,
+                StableEldritchHorns::createBodyLayer
+        );
 
         EntityRendererRegistry.register(
                 UnfairWeapons.PETRIFYING_EYE_ENTITY,

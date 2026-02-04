@@ -28,6 +28,9 @@ public class FeatureRenderer extends RenderLayer<HumanoidRenderState, HumanoidMo
         poseStack.pushPose();
         poseStack.translate(0.0, -1.5, 0.0);
 
+        // Copy head rotation from the parent model to the horns
+        this.customModel.copyHeadRotation(this.getParentModel().head);
+
         // Setup animations
         this.customModel.setupAnim(renderState);
 

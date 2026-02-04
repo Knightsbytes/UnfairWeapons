@@ -13,21 +13,33 @@ import unfairweapons.FeatureRenderer;
 import unfairweapons.ModelLayers;
 import unfairweapons.models.StableEldritchHorns;
 
-@Mixin(LivingEntityRenderer.class)
+@Mixin(net.minecraft.client.renderer.entity.player.AvatarRenderer.class)
 public abstract class PlayerRendererMixin {
 
     @Shadow
-    protected abstract boolean addLayer(RenderLayer<?, ?> renderLayer);
+    protected abstract boolean addLayer(RenderLayer<?, ?> layer);
 
-    @Inject(method = "<init>", at = @At("TAIL"))
-    private void addCustomFeature(EntityRendererProvider.Context context, CallbackInfo ci) {
-        // Check the class name to ensure we only add to player renderers
-        String className = this.getClass().getSimpleName();
-        if (className.contains("Player")) {
-            EntityModelSet modelSet = context.getModelSet();
+    @Inject(
+            method = "<init>",
+            at = @At("TAIL")
+    )
+    private void unfairweapons$addHorns(
+            EntityRendererProvider.Context context,
+            boolean slim,
+            CallbackInfo ci
+    ) {
+        System.out.println("ADDING HORNS TO PLAYER");
 
-            StableEldritchHorns hornsModel = new StableEldritchHorns(modelSet.bakeLayer(ModelLayers.CUSTOM_HORNS));
-            this.addLayer(new FeatureRenderer((LivingEntityRenderer)(Object)this, hornsModel));
-        }
+        EntityModelSet modelSet = context.getModelSet();
+
+        StableEldritchHorns horns =
+                new StableEldritchHorns(
+                        modelSet.bakeLayer(ModelLayers.CUSTOM_HORNS)
+                );
+
+        this.addLayer(new FeatureRenderer(
+                (LivingEntityRenderer)(Object)this,
+                horns
+        ));
     }
 }

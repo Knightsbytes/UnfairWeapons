@@ -23,6 +23,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.cow.Cow;
+import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -175,6 +176,40 @@ public class UnfairWeapons implements ModInitializer {
 				}
 			});
 		});
+		PayloadTypeRegistry.playC2S().register(ExplodeBlockPacket.TYPE, ExplodeBlockPacket.CODEC);
+		ServerPlayNetworking.registerGlobalReceiver(ExplodeBlockPacket.TYPE, (packet, context) -> {
+			context.server().execute(() -> {
+				ServerPlayer player = context.player();
+				ServerLevel level = player.level();
+
+				Vec3 hitPos = RayCastHelper.raycast(player, 50.0, false);
+				DeathLaser deathLaser = new DeathLaser(DEATH_LASER, level);
+				if (hitPos != null) {
+					level.explode(
+							deathLaser,
+							hitPos.x,
+							hitPos.y,
+							hitPos.z,
+							5,
+							true,
+							Level.ExplosionInteraction.MOB
+					);
+				}
+			});
+		});
+		PayloadTypeRegistry.playC2S().register(TeleportToBlockPacket.TYPE, TeleportToBlockPacket.CODEC);
+		ServerPlayNetworking.registerGlobalReceiver(TeleportToBlockPacket.TYPE, (packet, context) -> {
+			context.server().execute(() -> {
+				ServerPlayer player = context.player();
+				ServerLevel level = player.level();
+
+				Vec3 hitPos = RayCastHelper.raycast(player, 50.0, false);
+				if (hitPos != null) {
+					player.setPos(hitPos);
+				}
+			});
+		});
+
 		registerItems();
 		registerItemGroups();
 

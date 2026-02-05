@@ -376,6 +376,14 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                         ClientPlayNetworking.send(new UnboundChainsPacket());
                         cooldowns.put(cooldownKey, currentTick + ABILITY_5_COOLDOWN);
                     }
+
+                    if(Arrays.equals(currentKeys, new char[]{3, 0, 0, 0})){
+                        ClientPlayNetworking.send(new ExplodeBlockPacket());
+                    }
+
+                    if(Arrays.equals(currentKeys, new char[]{1, 0, 0, 0})){
+                        ClientPlayNetworking.send(new TeleportToBlockPacket());
+                    }
                 }
 
 

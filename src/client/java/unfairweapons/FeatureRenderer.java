@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.LivingEntity;
 import unfairweapons.models.StableEldritchHorns;
 
 import static unfairweapons.UnfairWeapons.MOD_ID;

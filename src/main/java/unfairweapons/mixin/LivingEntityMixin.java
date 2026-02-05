@@ -4,6 +4,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -29,18 +30,21 @@ public abstract class LivingEntityMixin {
             float finalDamage = cir.getReturnValue();
             finalDamage = finalDamage * (1.0f - (0.2f * (amplifier + 1)));
 
-            if (finalDamage > 1) {
-                finalDamage = 1;
+            if (finalDamage > 5) {
+                finalDamage = 5;
             }
 
-            if (entity.getHealth() - finalDamage <= 0){
+            if (entity.getHealth() - finalDamage <= 0 && amplifier == 2){
                 finalDamage = 0;
 
                 entity.heal(500);
                 entity.addEffect(new MobEffectInstance(
                         PETRIFICATION_EFFECT,
+                        900000,
                         3,
-                        900000
+                        false,
+                        false,
+                        true
                 ));
             }
 

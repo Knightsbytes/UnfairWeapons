@@ -28,13 +28,13 @@ public abstract class PlayerRendererMixin extends LivingEntityRenderer {
             boolean slim,
             CallbackInfo ci
     ) {
-        AbstractClientPlayer player = (AbstractClientPlayer) (Object) this;
+        //AbstractClientPlayer player = (AbstractClientPlayer) (Object) this;
 
-        var effect = player.getEffect(PETRIFICATION_EFFECT);
+        //var effect = player.getEffect(PETRIFICATION_EFFECT);
 
-        if (effect == null || effect.getAmplifier() <= 1) {
-            return;
-        }
+        //if (effect == null || effect.getAmplifier() <= 1) {
+        //    return;
+        //}
         EntityModelSet modelSet = context.getModelSet();
         StableEldritchHorns horns = new StableEldritchHorns(
                 modelSet.bakeLayer(ModelLayers.CUSTOM_HORNS)

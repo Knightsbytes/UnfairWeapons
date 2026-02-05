@@ -64,8 +64,8 @@ public class ItemsRegister {
         return ResourceKey.create(ROOT_ID, Identifier.fromNamespaceAndPath(MOD_ID, string));
     }
 
-    public static final ToolMaterial CLAYMORE_MATERIAL = new ToolMaterial(BlockTags.INCORRECT_FOR_NETHERITE_TOOL, 2031, 9.0F, 8.0F, 15, ItemTags.NETHERITE_TOOL_MATERIALS);
-    public static final ToolMaterial CYBER_CUTLASS_MATERIAL = new ToolMaterial(BlockTags.INCORRECT_FOR_NETHERITE_TOOL, 2031, 9.0F, 6.0F, 15, ItemTags.NETHERITE_TOOL_MATERIALS);
+    public static final ToolMaterial CLAYMORE_MATERIAL = new ToolMaterial(BlockTags.INCORRECT_FOR_NETHERITE_TOOL, 2031, 9.0F, 15.0F, 15, ItemTags.NETHERITE_TOOL_MATERIALS);
+    public static final ToolMaterial CYBER_CUTLASS_MATERIAL = new ToolMaterial(BlockTags.INCORRECT_FOR_NETHERITE_TOOL, 2031, 9.0F, 10.0F, 15, ItemTags.NETHERITE_TOOL_MATERIALS);
 
 
     public static final Item CLAYMORE = registerItem(

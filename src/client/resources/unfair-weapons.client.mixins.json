@@ -6,7 +6,8 @@
 		"HeartTypeMixin",
 		"EldritchSkinMixin",
 		"GameRendererMixin",
-		"PlayerRendererMixin"
+		"PlayerRendererMixin",
+		"ScrollWheelRemover"
 	],
 	"injectors": {
 		"defaultRequire": 1

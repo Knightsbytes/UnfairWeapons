@@ -19,19 +19,20 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.animal.cow.Cow;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import unfairweapons.entity.DeathLaser;
 import unfairweapons.entity.PetrifyingEye;
-import unfairweapons.networking.ApplyPetrification3Packet;
-import unfairweapons.networking.PetrifiedAbility2Packet;
-import unfairweapons.networking.SpawnPetrifiedSludgePacket;
-import unfairweapons.networking.SummonPetrifyingEyePacket;
+import unfairweapons.networking.*;
 
 import java.util.List;
 
+import static net.minecraft.world.effect.MobEffects.*;
 import static unfairweapons.CreativeTabRegister.registerItemGroups;
 import static unfairweapons.ItemsRegister.registerItems;
 
@@ -87,8 +88,6 @@ public class UnfairWeapons implements ModInitializer {
 		LOGGER.info("Hello Fabric world!");
 
 		PayloadTypeRegistry.playC2S().register(ApplyPetrification3Packet.TYPE, ApplyPetrification3Packet.CODEC);
-
-		// Handle packet on server
 		ServerPlayNetworking.registerGlobalReceiver(ApplyPetrification3Packet.TYPE, (packet, context) -> {
 			context.server().execute(() -> {
 				context.player().addEffect(new MobEffectInstance(
@@ -98,9 +97,7 @@ public class UnfairWeapons implements ModInitializer {
 				));
 			});
 		});
-
 		PayloadTypeRegistry.playC2S().register(SummonPetrifyingEyePacket.TYPE, SummonPetrifyingEyePacket.CODEC);
-
 		ServerPlayNetworking.registerGlobalReceiver(SummonPetrifyingEyePacket.TYPE, (packet, context) -> {
 			ServerPlayer player = context.player();
 			ServerLevel level = player.level();
@@ -108,14 +105,39 @@ public class UnfairWeapons implements ModInitializer {
 			eye.setPos(player.position().x, player.position().y, player.position().z);
 			level.addFreshEntity(eye);
 		});
+		PayloadTypeRegistry.playC2S().register(UnboundChainsPacket.TYPE, UnboundChainsPacket.CODEC);
+		ServerPlayNetworking.registerGlobalReceiver(UnboundChainsPacket.TYPE, (packet, context) -> {
+			ServerPlayer player = context.player();
+			ServerLevel level = player.level();
 
+			player.addEffect(new MobEffectInstance(
+					STRENGTH,
+					600,
+					5
+			));
+
+			player.addEffect(new MobEffectInstance(
+					SPEED,
+					600,
+					5
+			));
+
+			player.addEffect(new MobEffectInstance(
+					FIRE_RESISTANCE,
+					600,
+					5
+			));
+
+			player.addEffect(new MobEffectInstance(
+					ABSORPTION,
+					600,
+					5
+			));
+		});
 		PayloadTypeRegistry.playC2S().register(SpawnPetrifiedSludgePacket.TYPE, SpawnPetrifiedSludgePacket.STREAM_CODEC);
-
-
         ServerPlayNetworking.registerGlobalReceiver(SpawnPetrifiedSludgePacket.TYPE, (packet, context) -> {
 			packet.handle(context.player());
 		});
-
 		PayloadTypeRegistry.playC2S().register(PetrifiedAbility2Packet.TYPE, PetrifiedAbility2Packet.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(PetrifiedAbility2Packet.TYPE, (packet, context) -> {
 			ServerPlayer player = context.player();
@@ -135,7 +157,21 @@ public class UnfairWeapons implements ModInitializer {
 				}
 			}
 		});
+		PayloadTypeRegistry.playC2S().register(LaunchLaserPacket.TYPE, LaunchLaserPacket.CODEC);
+		ServerPlayNetworking.registerGlobalReceiver(LaunchLaserPacket.TYPE, (packet, context) -> {
+			context.server().execute(() -> {
+				ServerPlayer player = context.player();
+				ServerLevel level = player.level();
 
+				Vec3 hitPos = RayCastHelper.raycast(player, 50.0, false);
+
+				if (hitPos != null) {
+					DeathLaser deathLaser = new DeathLaser(DEATH_LASER, level);
+					deathLaser.setPos(hitPos);
+					level.addFreshEntity(deathLaser);
+				}
+			});
+		});
 		registerItems();
 		registerItemGroups();
 	}

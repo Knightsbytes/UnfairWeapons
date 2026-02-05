@@ -29,10 +29,7 @@ import org.lwjgl.glfw.GLFW;
 import unfairweapons.entity.DeathLaser;
 import unfairweapons.entity.PetrifyingEye;
 import unfairweapons.models.StableEldritchHorns;
-import unfairweapons.networking.ApplyPetrification3Packet;
-import unfairweapons.networking.PetrifiedAbility2Packet;
-import unfairweapons.networking.SpawnPetrifiedSludgePacket;
-import unfairweapons.networking.SummonPetrifyingEyePacket;
+import unfairweapons.networking.*;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -365,10 +362,20 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                             continue;
                         }
 
-                        ClientPlayNetworking.send(new PetrifiedAbility2Packet());
+                        ClientPlayNetworking.send(new LaunchLaserPacket());
                         cooldowns.put(cooldownKey, currentTick + ABILITY_4_COOLDOWN);
                     }
 
+                    if (Arrays.equals(currentKeys, new char[]{5, 5, 5, 5})) {
+                        // Check cooldown
+                        String cooldownKey = playerId + "_ability5";
+                        if (cooldowns.getOrDefault(cooldownKey, 0L) > currentTick) {
+                            continue;
+                        }
+
+                        ClientPlayNetworking.send(new UnboundChainsPacket());
+                        cooldowns.put(cooldownKey, currentTick + ABILITY_5_COOLDOWN);
+                    }
                 }
 
 

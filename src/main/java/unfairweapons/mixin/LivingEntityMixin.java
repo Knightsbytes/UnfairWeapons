@@ -29,8 +29,8 @@ public abstract class LivingEntityMixin {
             float finalDamage = cir.getReturnValue();
             finalDamage = finalDamage * (1.0f - (0.2f * (amplifier + 1)));
 
-            if (finalDamage > 5) {
-                finalDamage = 5;
+            if (finalDamage > 1) {
+                finalDamage = 1;
             }
 
             cir.setReturnValue(finalDamage);

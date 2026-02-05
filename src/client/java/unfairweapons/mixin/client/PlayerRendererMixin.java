@@ -1,6 +1,7 @@
 package unfairweapons.mixin.client;
 
 import net.minecraft.client.model.geom.EntityModelSet;
+import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import org.spongepowered.asm.mixin.Mixin;
@@ -10,6 +11,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import unfairweapons.FeatureRenderer;
 import unfairweapons.ModelLayers;
 import unfairweapons.models.StableEldritchHorns;
+
+import static unfairweapons.UnfairWeapons.PETRIFICATION_EFFECT;
 
 @Mixin(net.minecraft.client.renderer.entity.player.AvatarRenderer.class)
 public abstract class PlayerRendererMixin extends LivingEntityRenderer {
@@ -25,7 +28,13 @@ public abstract class PlayerRendererMixin extends LivingEntityRenderer {
             boolean slim,
             CallbackInfo ci
     ) {
-        System.out.println("ADDING HORNS TO PLAYER");
+        AbstractClientPlayer player = (AbstractClientPlayer) (Object) this;
+
+        var effect = player.getEffect(PETRIFICATION_EFFECT);
+
+        if (effect == null || effect.getAmplifier() <= 1) {
+            return;
+        }
         EntityModelSet modelSet = context.getModelSet();
         StableEldritchHorns horns = new StableEldritchHorns(
                 modelSet.bakeLayer(ModelLayers.CUSTOM_HORNS)

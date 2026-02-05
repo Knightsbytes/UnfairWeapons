@@ -13,7 +13,7 @@ import unfairweapons.models.StableEldritchHorns;
 import static unfairweapons.UnfairWeapons.MOD_ID;
 
 public class FeatureRenderer extends RenderLayer<HumanoidRenderState, HumanoidModel<HumanoidRenderState>> {
-    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(MOD_ID, "textures/entity/player/StableEldritchHorns.png");
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(MOD_ID, "textures/entity/player/stableeldritchhorns.png");
     private final StableEldritchHorns customModel;
 
     public FeatureRenderer(RenderLayerParent<HumanoidRenderState, HumanoidModel<HumanoidRenderState>> renderer, StableEldritchHorns model) {

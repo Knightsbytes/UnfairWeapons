@@ -10,7 +10,7 @@ import static unfairweapons.UnfairWeapons.MOD_ID;
 public class LaunchLaserPacket implements CustomPacketPayload {
 
     public static final CustomPacketPayload.Type<LaunchLaserPacket> TYPE =
-            new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(MOD_ID, "spawn_entity"));
+            new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(MOD_ID, "launch_laser"));
 
     public static final StreamCodec<FriendlyByteBuf, LaunchLaserPacket> CODEC =
             StreamCodec.unit(new LaunchLaserPacket());

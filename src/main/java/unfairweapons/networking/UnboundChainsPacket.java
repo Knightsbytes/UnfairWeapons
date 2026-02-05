@@ -10,7 +10,7 @@ import static unfairweapons.UnfairWeapons.MOD_ID;
 public record UnboundChainsPacket() implements CustomPacketPayload {
 
     public static final CustomPacketPayload.Type<UnboundChainsPacket> TYPE =
-            new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(MOD_ID, "spawn_entity"));
+            new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(MOD_ID, "unbound_chains"));
 
     public static final StreamCodec<FriendlyByteBuf, UnboundChainsPacket> CODEC =
             StreamCodec.unit(new UnboundChainsPacket());

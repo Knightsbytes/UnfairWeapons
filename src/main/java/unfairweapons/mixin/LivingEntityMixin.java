@@ -33,6 +33,17 @@ public abstract class LivingEntityMixin {
                 finalDamage = 1;
             }
 
+            if (entity.getHealth() - finalDamage <= 0){
+                finalDamage = 0;
+
+                entity.heal(500);
+                entity.addEffect(new MobEffectInstance(
+                        PETRIFICATION_EFFECT,
+                        3,
+                        900000
+                ));
+            }
+
             cir.setReturnValue(finalDamage);
         }
     }

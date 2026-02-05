@@ -366,7 +366,7 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                         cooldowns.put(cooldownKey, currentTick + ABILITY_4_COOLDOWN);
                     }
 
-                    if (Arrays.equals(currentKeys, new char[]{5, 5, 5, 5})) {
+                    if (Arrays.equals(currentKeys, new char[]{1, 3, 1, 3})) {
                         // Check cooldown
                         String cooldownKey = playerId + "_ability5";
                         if (cooldowns.getOrDefault(cooldownKey, 0L) > currentTick) {

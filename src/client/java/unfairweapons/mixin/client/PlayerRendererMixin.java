@@ -1,37 +1,29 @@
 package unfairweapons.mixin.client;
 
-import net.minecraft.client.model.geom.EntityModelSet;
-import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import unfairweapons.FeatureRenderer;
-import unfairweapons.ModelLayers;
-import unfairweapons.models.StableEldritchHorns;
+import unfairweapons.RenderingEntityHolder;
 
-import static unfairweapons.UnfairWeapons.PETRIFICATION_EFFECT;
+@Mixin(LivingEntityRenderer.class)
+public class PlayerRendererMixin {
 
-@Mixin(net.minecraft.client.renderer.entity.player.AvatarRenderer.class)
-public abstract class PlayerRendererMixin extends LivingEntityRenderer {
-
-    // Mixin requires this constructor even though it won't be called
-    public PlayerRendererMixin(EntityRendererProvider.Context context, net.minecraft.client.model.EntityModel model, float shadowRadius) {
-        super(context, model, shadowRadius);
+    @Inject(method = "render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V",
+            at = @At("HEAD"))
+    private void captureEntity(LivingEntity entity, float entityYaw, float partialTicks, PoseStack poseStack,
+                               MultiBufferSource buffer, int packedLight, CallbackInfo ci) {
+        RenderingEntityHolder.setEntity(entity);
     }
 
-    @Inject(method = "<init>", at = @At("TAIL"))
-    private void unfairweapons$addHorns(
-            EntityRendererProvider.Context context,
-            boolean slim,
-            CallbackInfo ci
-    ) {
-        EntityModelSet modelSet = context.getModelSet();
-        StableEldritchHorns horns = new StableEldritchHorns(
-                modelSet.bakeLayer(ModelLayers.CUSTOM_HORNS)
-        );
-        this.addLayer(new FeatureRenderer(this, horns));
+    @Inject(method = "render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V",
+            at = @At("RETURN"))
+    private void clearEntity(LivingEntity entity, float entityYaw, float partialTicks, PoseStack poseStack,
+                             MultiBufferSource buffer, int packedLight, CallbackInfo ci) {
+        RenderingEntityHolder.clear();
     }
 }

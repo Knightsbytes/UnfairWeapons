@@ -26,6 +26,7 @@ import net.minecraft.world.entity.animal.cow.Cow;
 import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.slf4j.Logger;
@@ -203,9 +204,9 @@ public class UnfairWeapons implements ModInitializer {
 				ServerPlayer player = context.player();
 				ServerLevel level = player.level();
 
-				Vec3 hitPos = RayCastHelper.raycast(player, 50.0, false);
+				Vec3 hitPos = RayCastHelper.raycast(player, 500.0, false);
 				if (hitPos != null) {
-					player.setPos(hitPos);
+					player.teleportTo(hitPos.x, hitPos.y, hitPos.z);
 				}
 			});
 		});
@@ -215,6 +216,10 @@ public class UnfairWeapons implements ModInitializer {
 
 		ServerTickEvents.END_SERVER_TICK.register(server -> {
 			for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+				ServerLevel overworldLevel = server.overworld();
+
+				overworldLevel.getGameRules().set(GameRules.COMMAND_BLOCKS_WORK, false, server);
+
 				AttributeMap playerAttributes = player.getAttributes();
 
 				playerAttributes.resetBaseValue(Attributes.GRAVITY);
@@ -225,7 +230,13 @@ public class UnfairWeapons implements ModInitializer {
 
 				AttributeInstance scale = player.getAttribute(Attributes.SCALE);
 				if (scale != null) scale.removeModifiers();
+
+
 			}
+
+		});
+		ServerTickEvents.START_SERVER_TICK.register(server -> {
+
 		});
 	}
 }

@@ -6,7 +6,6 @@
 		"HeartTypeMixin",
 		"EldritchSkinMixin",
 		"GameRendererMixin",
-		"PlayerRendererMixin",
 		"ScrollWheelRemover"
 	],
 	"injectors": {

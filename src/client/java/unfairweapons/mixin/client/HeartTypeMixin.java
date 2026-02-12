@@ -84,11 +84,9 @@ public abstract class HeartTypeMixin {
             }
 
         }
-        else if (mc.player != null && mc.player.hasEffect(PETRIFICATION_EFFECT)) {
+        else if (mc.player != null && mc.player.hasEffect(INCAPACITATION_EFFECT)) {
 
             String thisType = this.toString();
-
-            MobEffectInstance effectInstance = mc.player.getEffect(INCAPACITATION_EFFECT);
 
             String spriteName;
             if (hardcore) {

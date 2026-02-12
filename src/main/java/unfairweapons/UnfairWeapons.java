@@ -34,6 +34,8 @@ import org.slf4j.LoggerFactory;
 import unfairweapons.entity.DeathLaser;
 import unfairweapons.entity.PetrifyingEye;
 import unfairweapons.networking.*;
+import unfairweapons.weather.EldritchRain;
+import unfairweapons.weather.WeatherManager;
 
 import java.util.List;
 
@@ -60,6 +62,9 @@ public class UnfairWeapons implements ModInitializer {
 					.addAttributeModifier(Attributes.BLOCK_INTERACTION_RANGE, Identifier.fromNamespaceAndPath(MOD_ID, "effect.petrification.block_interaction_range"), 1F, AttributeModifier.Operation.ADD_VALUE)
 					.addAttributeModifier(Attributes.ATTACK_SPEED, Identifier.fromNamespaceAndPath(MOD_ID,"effect.petrification.haste"), 0.1F, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
 			);
+
+	public static final Holder<MobEffect> INCAPACITATION_EFFECT =
+			Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT, Identifier.fromNamespaceAndPath(MOD_ID, "disorientation"), new IncapacitationEffect());
 
 	public static final Holder<MobEffect> IMMORTALITY_EFFECT =
 			Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT, Identifier.fromNamespaceAndPath(MOD_ID, "immortality"), new ImmortalityEffect()
@@ -231,7 +236,10 @@ public class UnfairWeapons implements ModInitializer {
 				AttributeInstance scale = player.getAttribute(Attributes.SCALE);
 				if (scale != null) scale.removeModifiers();
 
-
+				for (ServerLevel level : server.getAllLevels()) {
+					WeatherManager.tick(level);
+					WeatherManager.startWeather(level, new EldritchRain(20 * 60));
+				}
 			}
 
 		});

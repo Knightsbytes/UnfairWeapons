@@ -13,8 +13,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import static unfairweapons.UnfairWeapons.MOD_ID;
-import static unfairweapons.UnfairWeapons.PETRIFICATION_EFFECT;
+import static unfairweapons.UnfairWeapons.*;
 
 // Target the private inner class directly using $ notation
 @Mixin(targets = "net.minecraft.client.gui.Gui$HeartType")
@@ -83,6 +82,30 @@ public abstract class HeartTypeMixin {
                 );
                 cir.setReturnValue(petrificationSprite);
             }
+
+        }
+        else if (mc.player != null && mc.player.hasEffect(PETRIFICATION_EFFECT)) {
+
+            String thisType = this.toString();
+
+            MobEffectInstance effectInstance = mc.player.getEffect(INCAPACITATION_EFFECT);
+
+            String spriteName;
+            if (hardcore) {
+                spriteName = "disoriented_container_hardcore";
+            } else {
+                spriteName = "disoriented_container";
+            }
+
+            if (blinking) {
+                spriteName += "_blinking";
+            }
+
+            Identifier incapacitationSprite = Identifier.fromNamespaceAndPath(
+                    MOD_ID,
+                    "hud/heart/" + spriteName
+            );
+            cir.setReturnValue(incapacitationSprite);
 
         }
     }

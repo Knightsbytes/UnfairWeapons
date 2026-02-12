@@ -20,6 +20,8 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.fog.FogRenderer;
+import net.minecraft.client.renderer.fog.environment.FogEnvironment;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -81,6 +83,8 @@ public class UnfairWeaponsClient implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
+
+
         EntityModelLayerRegistry.registerModelLayer(
                 ModelLayers.CUSTOM_HORNS,
                 StableEldritchHorns::createBodyLayer

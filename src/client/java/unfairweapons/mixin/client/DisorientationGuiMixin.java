@@ -1,20 +1,12 @@
 package unfairweapons.mixin.client;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Ordering;
 import net.minecraft.client.AttackIndicatorStatus;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.components.debug.DebugScreenEntries;
-import net.minecraft.client.gui.components.spectator.SpectatorGui;
-import net.minecraft.client.gui.contextualbar.ContextualBarRenderer;
-import net.minecraft.client.gui.contextualbar.ExperienceBarRenderer;
-import net.minecraft.client.gui.contextualbar.JumpableVehicleBarRenderer;
-import net.minecraft.client.gui.contextualbar.LocatorBarRenderer;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
@@ -33,6 +25,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Collection;
+import java.util.Objects;
 
 import static net.minecraft.client.gui.Gui.getMobEffectSprite;
 import static unfairweapons.UnfairWeapons.INCAPACITATION_EFFECT;
@@ -71,6 +64,7 @@ public abstract class DisorientationGuiMixin {
             cancellable = true
     )
     private void renderEffects(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+        assert this.minecraft.player != null;
         Collection<MobEffectInstance> collection = this.minecraft.player.getActiveEffects();
         if (!collection.isEmpty() && (this.minecraft.screen == null || !this.minecraft.screen.showsActiveEffects())) {
             int i = 0;
@@ -126,10 +120,12 @@ public abstract class DisorientationGuiMixin {
 
         Options options = this.minecraft.options;
         if (options.getCameraType().isFirstPerson()) {
+            assert this.minecraft.gameMode != null;
             if (this.minecraft.gameMode.getPlayerMode() != GameType.SPECTATOR) {
                 if (!this.minecraft.debugEntries.isCurrentlyEnabled(DebugScreenEntries.THREE_DIMENSIONAL_CROSSHAIR)) {
                     guiGraphics.nextStratum();
                     int i = 15;
+                    assert this.minecraft.player != null;
                     if (this.minecraft.player.hasEffect(INCAPACITATION_EFFECT)){
                         guiGraphics.blitSprite(RenderPipelines.CROSSHAIR, CROSSHAIR_SPRITE, (guiGraphics.guiWidth() - 55) / 2, (guiGraphics.guiHeight() - 15) / 2, 15, 15);
                     }
@@ -142,8 +138,8 @@ public abstract class DisorientationGuiMixin {
                         if (this.minecraft.crosshairPickEntity != null && this.minecraft.crosshairPickEntity instanceof LivingEntity && f >= 1.0F) {
                             bl = this.minecraft.player.getCurrentItemAttackStrengthDelay() > 5.0F;
                             bl &= this.minecraft.crosshairPickEntity.isAlive();
-                            AttackRange attackRange = (AttackRange)this.minecraft.player.getActiveItem().get(DataComponents.ATTACK_RANGE);
-                            bl &= attackRange == null || attackRange.isInRange(this.minecraft.player, this.minecraft.hitResult.getLocation());
+                            AttackRange attackRange = this.minecraft.player.getActiveItem().get(DataComponents.ATTACK_RANGE);
+                            bl &= attackRange == null || attackRange.isInRange(this.minecraft.player, Objects.requireNonNull(this.minecraft.hitResult).getLocation());
                         }
 
                         int j = guiGraphics.guiHeight() / 2 - 7 + 16;

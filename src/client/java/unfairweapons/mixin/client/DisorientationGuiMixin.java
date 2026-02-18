@@ -157,4 +157,13 @@ public abstract class DisorientationGuiMixin {
             }
         }
     }
+
+    @Inject(
+            method = "renderItemHotbar",
+            at = @At("HEAD"),
+            cancellable = true
+    )
+    private void renderItemHotbar(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci){
+        if (this.minecraft.player.hasEffect(INCAPACITATION_EFFECT)){ci.cancel();}
+    }
 }

@@ -164,6 +164,7 @@ public abstract class DisorientationGuiMixin {
             cancellable = true
     )
     private void renderItemHotbar(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci){
+        assert this.minecraft.player != null;
         if (this.minecraft.player.hasEffect(INCAPACITATION_EFFECT)){ci.cancel();}
     }
 }

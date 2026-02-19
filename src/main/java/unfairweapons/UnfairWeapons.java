@@ -223,8 +223,6 @@ public class UnfairWeapons implements ModInitializer {
 			for (ServerPlayer player : server.getPlayerList().getPlayers()) {
 				ServerLevel overworldLevel = server.overworld();
 
-				overworldLevel.getGameRules().set(GameRules.COMMAND_BLOCKS_WORK, false, server);
-
 				AttributeMap playerAttributes = player.getAttributes();
 
 				playerAttributes.resetBaseValue(Attributes.GRAVITY);
@@ -243,8 +241,20 @@ public class UnfairWeapons implements ModInitializer {
 			}
 
 		});
-		ServerTickEvents.START_SERVER_TICK.register(server -> {
+		ServerTickEvents.END_WORLD_TICK.register(level -> {
 
+            for (ServerPlayer player : level.players()) {
+				AttributeMap playerAttributes = player.getAttributes();
+
+				playerAttributes.resetBaseValue(Attributes.GRAVITY);
+				playerAttributes.resetBaseValue(Attributes.SCALE);
+				playerAttributes.resetBaseValue(Attributes.CAMERA_DISTANCE);
+				playerAttributes.resetBaseValue(Attributes.ATTACK_KNOCKBACK);
+				playerAttributes.resetBaseValue(Attributes.MOVEMENT_EFFICIENCY);
+
+				AttributeInstance scale = player.getAttribute(Attributes.SCALE);
+				if (scale != null) scale.removeModifiers();
+			}
 		});
 	}
 }

@@ -4,6 +4,7 @@ import net.fabricmc.fabric.impl.lookup.block.ServerWorldCache;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -18,6 +19,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 import static unfairweapons.ItemsRegister.BULLET;
+import static unfairweapons.UnfairWeapons.INCAPACITATION_EFFECT;
 
 public class ShotgunPellet extends ThrowableItemProjectile {
     public ShotgunPellet(EntityType<? extends net.minecraft.world.entity.projectile.throwableitemprojectile.Snowball> entityType, Level level) {
@@ -59,6 +61,17 @@ public class ShotgunPellet extends ThrowableItemProjectile {
         Entity entity = entityHitResult.getEntity();
         int damage = 90;
         entity.hurt(this.damageSources().thrown(this, this.getOwner()), damage);
+        MobEffectInstance effectInstance = new MobEffectInstance(
+                INCAPACITATION_EFFECT,
+                60,
+                254,
+                false,
+                true,
+                true
+        );
+        if (entity instanceof LivingEntity livingEntity){
+            livingEntity.addEffect(effectInstance);
+        }
     }
 
     @Override

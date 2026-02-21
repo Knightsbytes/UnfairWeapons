@@ -18,6 +18,9 @@ import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
+
+import static unfairweapons.UnfairWeapons.INCAPACITATION_EFFECT;
 
 public class CutlassItem extends Item {
     public CutlassItem(Properties properties){
@@ -35,13 +38,23 @@ public class CutlassItem extends Item {
                 true
         );
 
+        MobEffectInstance effectInstance2 = new MobEffectInstance(
+                INCAPACITATION_EFFECT,
+                60,
+                254,
+                false,
+                true,
+                true
+        );
+
         if (target != attacker) {
             target.addEffect(effectInstance);
+            target.addEffect(effectInstance2);
         }
     }
 
     @Override
-    public InteractionResult use(Level level, Player player, InteractionHand interactionHand) {
+    public @NotNull InteractionResult use(Level level, Player player, InteractionHand interactionHand) {
         ItemStack stack = player.getItemInHand(interactionHand);
         Holder<SoundEvent> holder = (Holder<SoundEvent>) EnchantmentHelper.pickHighestLevel(stack, EnchantmentEffectComponents.TRIDENT_SOUND)
                 .orElse(SoundEvents.TRIDENT_THROW);

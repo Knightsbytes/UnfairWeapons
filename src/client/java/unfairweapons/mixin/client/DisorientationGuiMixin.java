@@ -19,7 +19,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.component.AttackRange;
 import net.minecraft.world.level.GameType;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -34,6 +36,8 @@ import static unfairweapons.UnfairWeapons.MOD_ID;
 @Mixin(targets = "net.minecraft.client.gui.Gui")
 public abstract class DisorientationGuiMixin {
 
+    @Unique
+    @NotNull
     public Minecraft minecraft;
     private static final Identifier EFFECT_BACKGROUND_AMBIENT_SPRITE = Identifier.withDefaultNamespace("hud/effect_background_ambient");
     private static final Identifier EFFECT_BACKGROUND_SPRITE = Identifier.withDefaultNamespace("hud/effect_background");

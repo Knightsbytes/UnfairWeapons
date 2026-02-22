@@ -11,7 +11,6 @@ public class ScrollWheelRemover {
 
     @Inject(method = "onScroll", at = @At("HEAD"), cancellable = true)
     private void disableHotbarScroll(long window, double xOffset, double yOffset, CallbackInfo ci) {
-        // Cancel the scroll event entirely
         ci.cancel();
     }
 }

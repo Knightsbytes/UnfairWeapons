@@ -34,10 +34,6 @@ import org.slf4j.LoggerFactory;
 import unfairweapons.entity.DeathLaser;
 import unfairweapons.entity.PetrifyingEye;
 import unfairweapons.networking.*;
-import unfairweapons.weather.EldritchRain;
-import unfairweapons.weather.WeatherManager;
-
-import java.util.List;
 
 import static net.minecraft.world.effect.MobEffects.*;
 import static unfairweapons.CreativeTabRegister.registerItemGroups;
@@ -233,11 +229,6 @@ public class UnfairWeapons implements ModInitializer {
 
 				AttributeInstance scale = player.getAttribute(Attributes.SCALE);
 				if (scale != null) scale.removeModifiers();
-
-				for (ServerLevel level : server.getAllLevels()) {
-					WeatherManager.tick(level);
-					WeatherManager.startWeather(level, new EldritchRain(20 * 60));
-				}
 			}
 
 		});

@@ -285,6 +285,7 @@ public class UnfairWeaponsClient implements ClientModInitializer {
                     }
                 }
             }
+            //random comment
             while (PetrificationAbility4.consumeClick()) {
                 MobEffectInstance effectInstance = client.player.getEffect(PETRIFICATION_EFFECT);
 

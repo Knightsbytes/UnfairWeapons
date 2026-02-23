@@ -48,6 +48,10 @@ public abstract class LivingEntityMixin {
                 ));
             }
 
+            if (!(source.getEntity() instanceof Player player)){
+                cir.cancel();
+            }
+
             cir.setReturnValue(finalDamage);
         }
     }

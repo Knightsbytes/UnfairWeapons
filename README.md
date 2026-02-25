@@ -9,5 +9,6 @@ This mod contains the following items:
 * Full superconductor armour
 * Eldritch sludge
 * Petrification vial
+And a few other things not worth mentioning
 
 It also adds a creative item tab to hold these items.

@@ -49,7 +49,7 @@ public abstract class LivingEntityMixin {
             }
 
             if (!(source.getEntity() instanceof Player player)){
-                cir.cancel();//wow
+                cir.cancel();
             }
 
             cir.setReturnValue(finalDamage);

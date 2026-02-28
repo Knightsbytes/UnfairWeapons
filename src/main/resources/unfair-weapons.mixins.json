@@ -1,16 +1,18 @@
 {
-	"required": true,
-	"package": "unfairweapons.mixin",
-	"compatibilityLevel": "JAVA_21",
-	"mixins": [
-		"ExampleMixin",
-		"LivingEntityMixin",
-		"EldritchKnockbackMixin"
-	],
-	"injectors": {
-		"defaultRequire": 1
-	},
-	"overwrites": {
-		"requireAnnotations": true
+  "required": true,
+  "package": "unfairweapons.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "EldritchKnockbackMixin",
+    "ExampleMixin",
+    "ItemComponentAccessor",
+    "ItemMixin",
+    "LivingEntityMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
 	}
 }

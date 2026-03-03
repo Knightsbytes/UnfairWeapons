@@ -37,7 +37,7 @@ public class EnchantmentMixin {
 
     @Inject(method = "modifyDurabilityChange", at = @At("HEAD"), cancellable = true)
     public void modifyDurabilityChange(ServerLevel serverLevel, int i, ItemStack itemStack, MutableFloat mutableFloat, CallbackInfo ci) {
-        self.modifyItemFilteredCount(EnchantmentEffectComponents.ITEM_DAMAGE, serverLevel, -i, itemStack, mutableFloat);
+        self.modifyItemFilteredCount(EnchantmentEffectComponents.ITEM_DAMAGE, serverLevel, -i * 50, itemStack, mutableFloat);
         ci.cancel();
     }
 }

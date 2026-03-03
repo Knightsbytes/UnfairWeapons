@@ -3,7 +3,6 @@
   "package": "unfairweapons.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "ArmorMaterialsMixin",
     "EldritchKnockbackMixin",
     "EnchantmentMixin",
     "ExampleMixin",

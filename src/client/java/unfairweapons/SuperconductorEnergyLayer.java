@@ -11,6 +11,8 @@ import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
+import static unfairweapons.ItemsRegister.*;
+
 public class SuperconductorEnergyLayer extends EnergySwirlLayer<AvatarRenderState, PlayerModel> {
     private static final Identifier TEXTURE = Identifier.withDefaultNamespace("textures/entity/creeper/creeper_armor.png");
     private final PlayerModel model;
@@ -22,7 +24,10 @@ public class SuperconductorEnergyLayer extends EnergySwirlLayer<AvatarRenderStat
 
     @Override
     protected boolean isPowered(AvatarRenderState state) {
-        return true;
+        return state.headEquipment.is(SUPERCONDUCTOR_HELMET) &&
+                state.chestEquipment.is(SUPERCONDUCTOR_CHESTPLATE) &&
+                state.legsEquipment.is(SUPERCONDUCTOR_LEGGINGS) &&
+                state.feetEquipment.is(SUPERCONDUCTOR_BOOTS);
     }
 
     @Override

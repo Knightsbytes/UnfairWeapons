@@ -1,15 +1,18 @@
 {
-	"required": true,
-	"package": "unfairweapons.mixin.client",
-	"compatibilityLevel": "JAVA_21",
-	"client": [
-		"HeartTypeMixin",
-		"EldritchSkinMixin",
-		"GameRendererMixin",
-		"ScrollWheelRemover",
-		"DisorientationGuiMixin"
-	],
-	"injectors": {
-		"defaultRequire": 1
-	}
+  "required": true,
+  "package": "unfairweapons.mixin.client",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "DisorientationGuiMixin",
+    "EldritchSkinMixin",
+    "GameRendererMixin",
+    "HeartTypeMixin",
+    "ScrollWheelRemover"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "mixins": [
+    "ItemStackMixin"
+  ]
 }

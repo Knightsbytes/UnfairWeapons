@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
@@ -16,15 +17,19 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.fog.FogRenderer;
 import net.minecraft.client.renderer.fog.environment.FogEnvironment;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.lwjgl.glfw.GLFW;
@@ -33,10 +38,7 @@ import unfairweapons.entity.PetrifyingEye;
 import unfairweapons.models.StableEldritchHorns;
 import unfairweapons.networking.*;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 import static unfairweapons.UnfairWeapons.MOD_ID;
 import static unfairweapons.UnfairWeapons.PETRIFICATION_EFFECT;
@@ -80,15 +82,24 @@ public class UnfairWeaponsClient implements ClientModInitializer {
     private static long PetrificationCooldown5;
 
     private static long PetrificationAbility3Duration;
+    public static final Set<UUID> ELDRITCH_PLAYERS = new HashSet<>();
 
 	@Override
 	public void onInitializeClient() {
+        EntityModelLayerRegistry.registerModelLayer(EldritchHornsLayer.LAYER_LOCATION, StableEldritchHorns::createBodyLayer);
 
-
-        EntityModelLayerRegistry.registerModelLayer(
-                ModelLayers.CUSTOM_HORNS,
-                StableEldritchHorns::createBodyLayer
-        );
+        LivingEntityFeatureRendererRegistrationCallback.EVENT.register((entityType, renderer, registrationHelper, context) -> {
+            if (entityType == EntityType.PLAYER) {
+                registrationHelper.register(new SuperconductorEnergyLayer(
+                        (RenderLayerParent<AvatarRenderState, PlayerModel>) renderer,
+                        context.getModelSet()
+                ));
+                registrationHelper.register(new EldritchHornsLayer(
+                        (RenderLayerParent<AvatarRenderState, PlayerModel>) renderer,
+                        context.getModelSet()
+                ));
+            }
+        });
 
         EntityRendererRegistry.register(
                 UnfairWeapons.PETRIFYING_EYE_ENTITY,
@@ -109,6 +120,13 @@ public class UnfairWeaponsClient implements ClientModInitializer {
         final int ABILITY_5_COOLDOWN = 300;
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            if (client.level == null) return;
+            ELDRITCH_PLAYERS.clear();
+            client.level.players().forEach(player -> {
+                if (player.getEffect(PETRIFICATION_EFFECT) != null) {
+                    ELDRITCH_PLAYERS.add(player.getUUID());
+                }
+            });
             if (client.player == null || client.level == null) return;
 
             long currentTick = client.level.getGameTime();

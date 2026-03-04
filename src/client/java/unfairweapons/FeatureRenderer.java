@@ -16,7 +16,7 @@ import static unfairweapons.UnfairWeapons.MOD_ID;
 import static unfairweapons.UnfairWeapons.PETRIFICATION_EFFECT;
 
 public class FeatureRenderer extends RenderLayer<HumanoidRenderState, HumanoidModel<HumanoidRenderState>> {
-    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(MOD_ID, "textures/entity/player/stableeldritchhorns.png");
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(MOD_ID, "textures/entity/player/eldritch_horns.png");
     private final StableEldritchHorns customModel;
 
     public FeatureRenderer(RenderLayerParent<HumanoidRenderState, HumanoidModel<HumanoidRenderState>> renderer, StableEldritchHorns model) {

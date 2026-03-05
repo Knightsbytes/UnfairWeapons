@@ -3,6 +3,7 @@ package unfairweapons.mixin;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
@@ -48,10 +49,14 @@ public abstract class LivingEntityMixin {
                 ));
             }
 
-            if (!(source.getEntity() instanceof Player player)){
-                cir.cancel();
+            if (source.getEntity() instanceof LightningBolt){
+                finalDamage *= 10;
             }
 
+
+            if (!(source.getEntity() instanceof Player player)){
+                finalDamage = 0;
+            }
             cir.setReturnValue(finalDamage);
         }
     }

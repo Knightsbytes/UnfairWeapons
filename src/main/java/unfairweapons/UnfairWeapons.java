@@ -2,6 +2,7 @@ package unfairweapons;
 
 import net.fabricmc.api.ModInitializer;
 
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -17,14 +18,14 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.cow.Cow;
 import net.minecraft.world.entity.item.PrimedTnt;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
@@ -37,9 +38,11 @@ import unfairweapons.entity.DeathLaser;
 import unfairweapons.entity.PetrifyingEye;
 import unfairweapons.networking.*;
 
+import java.util.UUID;
+
 import static net.minecraft.world.effect.MobEffects.*;
 import static unfairweapons.CreativeTabRegister.registerItemGroups;
-import static unfairweapons.ItemsRegister.registerItems;
+import static unfairweapons.ItemsRegister.*;
 
 public class UnfairWeapons implements ModInitializer {
 	public static final String MOD_ID = "unfair-weapons";
@@ -247,6 +250,28 @@ public class UnfairWeapons implements ModInitializer {
 
 				AttributeInstance scale = player.getAttribute(Attributes.SCALE);
 				if (scale != null) scale.removeModifiers();
+			}
+		});
+		ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, baseDamageTaken, damageTaken, blocked) -> {
+			if (!(entity instanceof ServerPlayer player)) return;
+
+			if (player.getItemBySlot(EquipmentSlot.HEAD).is(SUPERCONDUCTOR_HELMET) &&
+					player.getItemBySlot(EquipmentSlot.CHEST).is(SUPERCONDUCTOR_CHESTPLATE) &&
+					player.getItemBySlot(EquipmentSlot.LEGS).is(SUPERCONDUCTOR_LEGGINGS) &&
+					player.getItemBySlot(EquipmentSlot.FEET).is(SUPERCONDUCTOR_BOOTS)) {
+
+				ServerLevel level = (ServerLevel) player.level();
+				AABB entitiesInRangeOfLightning = new AABB(player.position(), player.position()).inflate(10);
+				for (Player person : level.getEntitiesOfClass(Player.class, entitiesInRangeOfLightning)) {
+					if (person == player){return;}
+					LightningBolt lightning = EntityType.LIGHTNING_BOLT.create(level, EntitySpawnReason.TRIGGERED);
+					if (lightning != null) {
+						lightning.setPos(person.position());
+						lightning.setVisualOnly(false);
+						level.addFreshEntity(lightning);
+					}
+				}
+
 			}
 		});
 	}

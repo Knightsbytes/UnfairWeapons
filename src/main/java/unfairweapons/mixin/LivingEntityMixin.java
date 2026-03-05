@@ -1,8 +1,10 @@
 package unfairweapons.mixin;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -11,6 +13,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import static unfairweapons.ItemsRegister.*;
+import static unfairweapons.ItemsRegister.SUPERCONDUCTOR_BOOTS;
 import static unfairweapons.UnfairWeapons.PETRIFICATION_EFFECT;
 
 @Mixin(LivingEntity.class)

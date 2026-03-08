@@ -33,7 +33,7 @@ public class EldritchHornsLayer extends RenderLayer<AvatarRenderState, PlayerMod
     public void submit(PoseStack poseStack, SubmitNodeCollector collector, int light, AvatarRenderState state, float f, float g) {
         if (Minecraft.getInstance().level == null) return;
         var player = Minecraft.getInstance().level.getEntity(state.id);
-        if (!(player instanceof Player p) || p.getEffect(PETRIFICATION_EFFECT) == null) return;
+        if (!(player instanceof Player p) || p.getEffect(PETRIFICATION_EFFECT) == null || p.getEffect(PETRIFICATION_EFFECT).getAmplifier() <= 3) return;
 
         PlayerModel parentModel = this.getParentModel();
         this.model.copyHeadRotation(parentModel.head);

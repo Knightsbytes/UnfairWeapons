@@ -144,7 +144,7 @@ public class UnfairWeapons implements ModInitializer {
 					600,
 					5
 			));
-		});
+		});//What a comment
 		PayloadTypeRegistry.playC2S().register(SpawnPetrifiedSludgePacket.TYPE, SpawnPetrifiedSludgePacket.STREAM_CODEC);
         ServerPlayNetworking.registerGlobalReceiver(SpawnPetrifiedSludgePacket.TYPE, (packet, context) -> {
 			packet.handle(context.player());
